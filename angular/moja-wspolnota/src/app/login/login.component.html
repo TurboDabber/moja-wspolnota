@@ -1,0 +1,59 @@
+<div class="login-component">
+    <mat-card class="login-card">
+        <div class="header">
+            <h1>
+                Moja wspólnota
+            </h1>
+            <a>
+                Dobre miejsce dla twojej wspólnoty wyznaniowej
+            </a>
+            <a>
+                jakakolwiek by nie była
+            </a>
+        </div>
+
+        <div class="input-wrapper">
+            <mat-form-field class="input">
+                <mat-label>
+                    E-mail
+                </mat-label>
+                
+                <input matInput 
+                       placeholder="E-mail"
+                       [(ngModel)]="email">
+            </mat-form-field>
+
+            <mat-form-field class="input">
+                <mat-label>
+                    Hasło
+                </mat-label>
+                
+                <input matInput 
+                       [type]="hide ? 'password' : 'text'"
+                       [(ngModel)]="password">
+
+                <button mat-icon-button 
+                        matSuffix 
+                        (click)="hide = !hide">
+
+                    <mat-icon>
+                        {{hide ? 'visibility_off' : 'visibility'}}
+                    </mat-icon>
+                </button>
+            </mat-form-field>
+
+            <button class="button"
+                    mat-raised-button
+                    color="primary"
+                    (click)="onClick()">
+                Login
+            </button>
+            <label>
+                Nie masz konta? 
+                <a routerLink="/register">
+                    Zarejestruj się
+                </a>
+            </label> 
+        </div>
+    </mat-card>
+</div>
