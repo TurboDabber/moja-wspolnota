@@ -198,10 +198,14 @@ def get_religious_center_reviews(center_id):
 @app.route('/reviews', methods=['POST'])
 def create_review():
   data = request.get_json()
-  new_review = Review(religious_center_id=data['religious_center_id'], mark=data['mark'], review_text=data['review_text'], user_id=data['user_id'])
-  db.session.add(new_review)
-  db.session.commit()
-  return jsonify({'message': 'Successfully created review.', 'review_id': new_review.id}), 201
+  center = ReligiousCenter.query.get(data['religious_center_id'])
+  if center:
+    new_review = Review(religious_center_id=data['religious_center_id'], mark=data['mark'], review_text=data['review_text'], user_id=data['user_id'])
+    db.session.add(new_review)
+    db.session.commit()
+    return jsonify({'message': 'Successfully created review.', 'review_id': new_review.id}), 201
+  else:
+    return jsonify({'message': 'Incorrect! this religious_centre does not exist in our environemtn.', 'religious_centre_id': data['religious_center_id']}), 404
 
 @app.route('/reviews/<int:review_id>', methods=['GET'])
 def get_review(review_id):
