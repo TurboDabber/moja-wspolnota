@@ -1,0 +1,63 @@
+<div class="register-component">
+    <mat-card class="register-card">
+        <div class="header">
+            <h1>
+                Rejestracja
+            </h1>
+        </div>
+        <div class="input-wrapper">
+            <mat-form-field class="input">
+                <mat-label>
+                    Imię
+                </mat-label>
+                
+                <input matInput 
+                       placeholder="Imię"
+                       [(ngModel)]="name">
+            </mat-form-field>
+
+            <mat-form-field class="input">
+                <mat-label>
+                    E-mail
+                </mat-label>
+                
+                <input matInput 
+                       placeholder="E-mail"
+                       [(ngModel)]="email">
+            </mat-form-field>
+
+            <mat-form-field class="input">
+                <mat-label>
+                    Hasło
+                </mat-label>
+                
+                <input matInput 
+                       type="password"
+                       [(ngModel)]="password">
+            </mat-form-field>
+
+            <mat-form-field class="input">
+                <mat-label>
+                    Powtórz hasło
+                </mat-label>
+                
+                <input matInput 
+                       type="password"
+                       [(ngModel)]="passwordRepeat">
+            </mat-form-field>
+
+            <button class="button"
+                    mat-raised-button
+                    color="primary"
+                    (click)="onClick()">
+                Zarejestruj się
+            </button>
+            <label>
+                Masz konto? 
+                <a routerLink="/login">
+                    Zaloguj się
+                </a>
+            </label> 
+        </div>
+    </mat-card>
+</div>
