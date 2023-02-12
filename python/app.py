@@ -26,6 +26,12 @@ class User(db.Model):
   religious_centers = db.relationship('ReligiousCenter', backref='user', lazy=True)
   reviews = db.relationship('Review', backref='user', lazy=True)
 
+class ReligionType(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String, nullable=False)
+  desc = db.Column(db.String)
+  image = db.Column(db.String)
+
 class ReligiousCenter(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String, nullable=False)
@@ -34,6 +40,7 @@ class ReligiousCenter(db.Model):
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
   desc = db.Column(db.String)
   image_bytes = db.Column(db.String)
+  religion_type_id = db.Column(db.Integer, db.ForeignKey('religion_type.id'), nullable=False)
   reviews = db.relationship('Review', backref='religious_center', lazy=True)    
 
 class Review(db.Model):
@@ -143,12 +150,31 @@ def get_user_reviews(user_id):
     return jsonify({'reviews': data}), 200
   return jsonify({'message': 'User not found.'}), 404
 
+@app.route('/users', methods=['GET'])
+@login_is_required
+def get_all_users():
+  users = User.query.all()
+  data = []
+  for user in users:
+    jsonUsers=[{
+    "id" : user.id,
+    "password" : user.password,
+    "google_id" : user.google_id,
+    "email" : user.email,
+    "name" : user.name,
+    "is_admin" : user.is_admin,
+    "reviews" : [],
+    "religious_centers" : []
+    }]
+    data.append(jsonUsers)
+  return jsonify({'users': data}), 200
+
 #CRUD religious_centers
 @app.route('/religious_centers', methods=['POST'])
 @login_is_required
 def create_religious_center():
   data = request.get_json()
-  new_center = ReligiousCenter(name=data['name'], lat=data['lat'], lng=data['lng'], user_id=data['user_id'], desc=data['desc'], image_bytes=data['image_bytes'])
+  new_center = ReligiousCenter(name=data['name'], lat=data['lat'], lng=data['lng'], user_id=data['user_id'], desc=data['desc'], image_bytes=data['image_bytes'], religion_type_id=data["religion_type_id"])
   db.session.add(new_center)
   db.session.commit()
   return jsonify({'message': 'Successfully created religious center.','center_id': new_center.id}), 201
@@ -166,6 +192,7 @@ def get_religious_center(center_id):
         "user_id" : center.user_id,
         "desc" : center.desc,
         "image_bytes" : center.image_bytes,
+        "religion_type_id" : center.religion_type_id
       }]
       print("hej!")
       return jsonify({'religious_center': jsonCentre}), 200
@@ -197,7 +224,7 @@ def delete_religious_center(center_id):
     return jsonify({'message': 'Successfully deleted religious center.'}), 200
   return jsonify({'message': 'Religious center not found.'}), 404
 
-@app.route('/religious_centers/<int:center_id>/reviews', methods=['GET'])
+@app.route('/religious_centers/<int:center_id>/religion_type', methods=['GET'])
 @login_is_required
 def get_religious_center_reviews(center_id):
   center = ReligiousCenter.query.get(center_id)
@@ -215,6 +242,24 @@ def get_religious_center_reviews(center_id):
       data.append(jsonReview)
     return jsonify({'reviews': data}), 200
   return jsonify({'message': 'Religious center not found.'}), 404
+
+@app.route('/religion_centers', methods=['GET'])
+def get_all_religion_centers():
+  religion_centers = ReligiousCenter.query.all()
+  data = []
+  for religion_center in religion_centers:
+    jsonReligionCentres=[{
+    "id" : religion_center.id,
+    "name" : religion_center.name,
+    "lat" : religion_center.lat,
+    "lng" : religion_center.lng,
+    "user_id" : religion_center.user_id,
+    "desc" : religion_center.desc,
+    "image_bytes" : religion_center.image_bytes,
+    "religion_type_id" : religion_center.religion_type_id
+    }]
+    data.append(jsonReligionCentres)
+  return jsonify({'religion_centers': data}), 200
 
 #CRUD review
 @app.route('/reviews', methods=['POST'])
@@ -268,6 +313,87 @@ def delete_review(review_id):
     db.session.commit()
     return jsonify({'message': 'Successfully deleted review.'}), 200
   return jsonify({'message': 'Review not found.'}), 404
+
+@app.route('/reviews', methods=['GET'])
+@login_is_required
+def get_all_reviews():
+  reviews = Review.query.all()
+  if reviews:
+    data = []
+    for review in reviews:
+      json_reviews=[{
+          "id" : review.id,
+          "religious_center_id" : review.religious_center_id,
+          "mark" : review.mark,
+          "review_text" : review.review_text,
+          "user_id" : review.user_id
+        }]
+      data.append(json_reviews)
+    return jsonify({'reviews': data}), 200
+  return jsonify({'message': 'No reviews found.'}), 404
+#CRUD religious_types
+app.route('/religion_types', methods=['POST'])
+@login_is_required
+def create_religion_type():
+  data = request.get_json()
+  new_religion_type = ReligionType(name=data['name'], desc=data['desc'], image_bytes=data['image_bytes'])
+  db.session.add(new_religion_type)
+  db.session.commit()
+  return jsonify({'message': 'Successfully created religion type.', 'religion_type_id': new_religion_type.id}), 201
+
+@app.route('/religion_types/<int:religion_type_id>', methods=['GET'])
+@login_is_required
+def get_religion_type(religion_type_id):
+  religion_type = ReligionType.query.get(religion_type_id)
+  if religion_type:
+    jsonRelType = [{
+        "id" : religion_type.id,
+        "name" : religion_type.name,
+        "desc" : religion_type.desc,
+        "image_bytes" : religion_type.image_bytes
+      }]
+    return jsonify({'religion_type': jsonRelType}), 200
+  return jsonify({'message': 'Religion type not found.'}), 404
+
+@app.route('/religion_types/<int:religion_type_id>', methods=['PUT'])
+@login_is_required
+def update_religion_type(religion_type_id):
+  religion_type = ReligionType.query.get(religion_type_id)
+  if religion_type:
+    data = request.get_json()
+    religion_type.name = data['name']
+    religion_type.desc = data['desc']
+    religion_type.image_bytes = data['image_bytes']
+    db.session.commit()
+    return jsonify({'message': 'Successfully updated religion type.', 'religion_type': religion_type.__dict__}), 200
+  return jsonify({'message': 'Religion type not found.'}), 404
+
+@app.route('/religion_types/<int:religion_type_id>', methods=['DELETE'])
+@login_is_required
+def delete_religion_type(religion_type_id):
+  religion_type = ReligionType.query.get(religion_type_id)
+  if religion_type:
+    db.session.delete(religion_type)
+    db.session.commit()
+    return jsonify({'message': 'Successfully deleted religion type.'}), 200
+  return jsonify({'message': 'Religion type not found.'}), 404
+
+@app.route('/religion_types', methods=['GET'])
+@login_is_required
+def get_all_religion_types():
+  religion_types = ReligionType.query.all()
+  if religion_types:
+    data = []
+    for religion_type in religion_types:
+      json_religion_types=[{
+          "id" : religion_type.id,
+          "name" : religion_type.name,
+          "desc" : religion_type.desc,
+          "image_bytes" : religion_type.image_bytes
+        }]
+      data.append(json_religion_types)
+    return jsonify({'religion_types': data}), 200
+  return jsonify({'message': 'No religion types found.'}), 404
 #########################################################################
 print("ok")
 if __name__ == '__main__':
