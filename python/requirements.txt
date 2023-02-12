@@ -1,3 +1,4 @@
 Flask==2.2
 Flask-SQLAlchemy
 bcrypt
+google_auth_oauthlib
