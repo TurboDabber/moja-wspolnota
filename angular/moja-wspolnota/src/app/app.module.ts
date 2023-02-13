@@ -10,7 +10,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { RegisterComponent } from './register/register.component'
+import { RegisterComponent } from './register/register.component';
+import { MapViewComponent } from './map-view/map-view.component';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 const MaterialComponents = [
   MatFormFieldModule, 
@@ -25,13 +27,15 @@ const MaterialComponents = [
     AppComponent,
     LoginComponent,
     RegisterComponent,
+    MapViewComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
-    MaterialComponents
+    MaterialComponents,
+    LeafletModule
   ],
   exports: [
     MaterialComponents
