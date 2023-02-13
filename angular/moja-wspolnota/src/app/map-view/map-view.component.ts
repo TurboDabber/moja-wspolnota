@@ -11,7 +11,7 @@ export class MapViewComponent {
   options: Leaflet.MapOptions = {
     layers: getLayers(),
     zoom: 12,
-    center: new Leaflet.LatLng(43.530147, 16.488932)
+    center: new Leaflet.LatLng(50.28858, 18.67737)
   };
 }
 

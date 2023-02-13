@@ -1,0 +1,12 @@
+.navbar-container {
+    .toolbar {
+        display: flex;
+        justify-content: space-between;
+
+        .buttons-container {
+            .button {
+                margin-right: 10px;
+            }
+        }
+    }
+}
