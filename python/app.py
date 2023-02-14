@@ -1,6 +1,7 @@
 import os
 from flask import Flask, abort, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 import bcrypt
 import sqlite3
 
@@ -14,6 +15,7 @@ db.init_app(app)
 
 _GOOGLE_CLIENT_ID_ = "852644168320-677khcsl54gigpuifr81gqqrp9rin0s3.apps.googleusercontent.com"
 
+CORS(app)
 #flow = Flow.from_cleint_secrets_file()
 
 class User(db.Model):
@@ -90,8 +92,6 @@ def get_user(user_id):
       "name" : user.name,
       "is_admin" : user.is_admin,
       "id" : user.id,
-      "religious_centers" : user.religious_centers,
-      "reviews" : user.reviews
     }]
     return jsonify({'user': jsonUser}), 200
   return jsonify({'message': 'User not found.'}), 404
@@ -145,8 +145,8 @@ def get_user_reviews(user_id):
         "mark" : rev.mark,
         "review_text" : rev.review_text,
         "user_id" : rev.user_id
-    }]
-    data.append(jsonReview)
+      }]
+      data.append(jsonReview)
     return jsonify({'reviews': data}), 200
   return jsonify({'message': 'User not found.'}), 404
 
@@ -158,13 +158,11 @@ def get_all_users():
   for user in users:
     jsonUsers=[{
     "id" : user.id,
-    "password" : user.password,
+    "password" :  "****",
     "google_id" : user.google_id,
     "email" : user.email,
     "name" : user.name,
-    "is_admin" : user.is_admin,
-    "reviews" : [],
-    "religious_centers" : []
+    "is_admin" : user.is_admin
     }]
     data.append(jsonUsers)
   return jsonify({'users': data}), 200
@@ -243,7 +241,7 @@ def get_religious_center_reviews(center_id):
     return jsonify({'reviews': data}), 200
   return jsonify({'message': 'Religious center not found.'}), 404
 
-@app.route('/religion_centers', methods=['GET'])
+@app.route('/religious_centers', methods=['GET'])
 def get_all_religion_centers():
   religion_centers = ReligiousCenter.query.all()
   data = []
@@ -332,11 +330,11 @@ def get_all_reviews():
     return jsonify({'reviews': data}), 200
   return jsonify({'message': 'No reviews found.'}), 404
 #CRUD religious_types
-app.route('/religion_types', methods=['POST'])
+@app.route('/religion_types', methods=['POST'])
 @login_is_required
 def create_religion_type():
   data = request.get_json()
-  new_religion_type = ReligionType(name=data['name'], desc=data['desc'], image_bytes=data['image_bytes'])
+  new_religion_type = ReligionType(name=data['name'], desc=data['desc'], image=data['image'])
   db.session.add(new_religion_type)
   db.session.commit()
   return jsonify({'message': 'Successfully created religion type.', 'religion_type_id': new_religion_type.id}), 201
@@ -350,7 +348,7 @@ def get_religion_type(religion_type_id):
         "id" : religion_type.id,
         "name" : religion_type.name,
         "desc" : religion_type.desc,
-        "image_bytes" : religion_type.image_bytes
+        "image" : religion_type.image
       }]
     return jsonify({'religion_type': jsonRelType}), 200
   return jsonify({'message': 'Religion type not found.'}), 404
@@ -363,7 +361,7 @@ def update_religion_type(religion_type_id):
     data = request.get_json()
     religion_type.name = data['name']
     religion_type.desc = data['desc']
-    religion_type.image_bytes = data['image_bytes']
+    religion_type.image = data['image']
     db.session.commit()
     return jsonify({'message': 'Successfully updated religion type.', 'religion_type': religion_type.__dict__}), 200
   return jsonify({'message': 'Religion type not found.'}), 404
@@ -389,7 +387,7 @@ def get_all_religion_types():
           "id" : religion_type.id,
           "name" : religion_type.name,
           "desc" : religion_type.desc,
-          "image_bytes" : religion_type.image_bytes
+          "image" : religion_type.image
         }]
       data.append(json_religion_types)
     return jsonify({'religion_types': data}), 200
