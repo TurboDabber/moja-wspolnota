@@ -17,6 +17,8 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MainViewComponent } from './main-view/main-view.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { InfoSideViewComponent } from './info-side-view/info-side-view.component';
+import { MarkersService } from './services/markers.service';
+import { HttpClientModule } from '@angular/common/http';
 
 const MaterialComponents = [
   MatFormFieldModule, 
@@ -43,12 +45,15 @@ const MaterialComponents = [
     BrowserAnimationsModule,
     FormsModule,
     MaterialComponents,
-    LeafletModule
+    LeafletModule,
+    HttpClientModule
   ],
   exports: [
     MaterialComponents
   ],
-  providers: [],
+  providers: [
+    MarkersService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
