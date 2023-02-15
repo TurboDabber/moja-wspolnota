@@ -31,8 +31,8 @@ class User(db.Model):
 class ReligionType(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String, nullable=False)
-  desc = db.Column(db.String)
-  image = db.Column(db.String)
+  desc = db.Column(db.String, nullable=True) 
+  image = db.Column(db.String, nullable=True)
 
 class ReligiousCenter(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -41,7 +41,7 @@ class ReligiousCenter(db.Model):
   lng = db.Column(db.Float, nullable=False)
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
   desc = db.Column(db.String)
-  image_bytes = db.Column(db.String)
+  image = db.Column(db.String)
   religion_type_id = db.Column(db.Integer, db.ForeignKey('religion_type.id'), nullable=False)
   reviews = db.relationship('Review', backref='religious_center', lazy=True)    
 
@@ -125,7 +125,7 @@ def get_user_religious_centers(user_id):
         "lng" : centre.lng,
         "user_id" : centre.user_id,
         "desc" : centre.desc,
-        "image_bytes" : centre.image_bytes,
+        "image" : centre.image,
         }]
       data.append(jsonCentre)
     return jsonify({'religious_centers': data}), 200
@@ -172,7 +172,7 @@ def get_all_users():
 @login_is_required
 def create_religious_center():
   data = request.get_json()
-  new_center = ReligiousCenter(name=data['name'], lat=data['lat'], lng=data['lng'], user_id=data['user_id'], desc=data['desc'], image_bytes=data['image_bytes'], religion_type_id=data["religion_type_id"])
+  new_center = ReligiousCenter(name=data['name'], lat=data['lat'], lng=data['lng'], user_id=data['user_id'], desc=data['desc'], image=data['image'], religion_type_id=data["religion_type_id"])
   db.session.add(new_center)
   db.session.commit()
   return jsonify({'message': 'Successfully created religious center.','center_id': new_center.id}), 201
@@ -189,7 +189,7 @@ def get_religious_center(center_id):
         "lng" : center.lng,
         "user_id" : center.user_id,
         "desc" : center.desc,
-        "image_bytes" : center.image_bytes,
+        "image" : center.image,
         "religion_type_id" : center.religion_type_id
       }]
       print("hej!")
@@ -207,7 +207,7 @@ def update_religious_center(center_id):
     center.lng = data['lng']
     center.user_id = data['user_id']
     center.desc = data['desc']
-    center.image_bytes = data['image_bytes']
+    center.image= data['image']
     db.session.commit()
     return jsonify({'message': 'Successfully updated religious center.', 'religious_center': center.__dict__}), 200
   return jsonify({'message': 'Religious center not found.'}), 404
@@ -253,7 +253,7 @@ def get_all_religion_centers():
     "lng" : religion_center.lng,
     "user_id" : religion_center.user_id,
     "desc" : religion_center.desc,
-    "image_bytes" : religion_center.image_bytes,
+    "image" : religion_center.image,
     "religion_type_id" : religion_center.religion_type_id
     }]
     data.append(jsonReligionCentres)
