@@ -45,6 +45,14 @@ class ReligiousCenter(db.Model):
   religion_type_id = db.Column(db.Integer, db.ForeignKey('religion_type.id'), nullable=False)
   reviews = db.relationship('Review', backref='religious_center', lazy=True)    
 
+class ReligiousAnnouncment(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  religious_center_id = db.Column(db.Integer, db.ForeignKey('religious_center.id'), nullable=False)
+  religious_center = db.relationship('ReligiousCenter', backref=db.backref('announcements', lazy=True))
+  user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+  user = db.relationship('User', backref=db.backref('announcements', lazy=True))
+  announcment = db.Column(db.String)
+
 class Review(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   religious_center_id = db.Column(db.Integer, db.ForeignKey('religious_center.id'), nullable=False)
