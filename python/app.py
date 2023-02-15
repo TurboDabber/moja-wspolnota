@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import bcrypt
 import sqlite3
-
+from requests import Session
 from sqlalchemy import create_engine
 
 db = SQLAlchemy()
@@ -15,7 +15,9 @@ db.init_app(app)
 
 _GOOGLE_CLIENT_ID_ = "852644168320-677khcsl54gigpuifr81gqqrp9rin0s3.apps.googleusercontent.com"
 
-CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+cors = CORS(app)
 #flow = Flow.from_cleint_secrets_file()
 
 class User(db.Model):
@@ -78,7 +80,7 @@ def create_user():
   data = request.get_json()
   user1 = User.query.filter_by(google_id=data['google_id']).first()
   if(user1):
-    return jsonify({'message': 'User with such google_id exists.', 'user_google_id': data['google_id']}), 404
+    return jsonify({'message': 'User with such google_id exists.', 'user_google_id': data['google_id']}), 422
   new_user = User( password=bcrypt.hashpw((data['password']).encode(), bcrypt.gensalt()),
                    google_id=data['google_id'], 
                    email=data['email'], 
@@ -89,7 +91,7 @@ def create_user():
   return jsonify({'message': 'Successfully created user.', 'user_id': new_user.id}), 201
 
 @app.route('/users/<int:user_id>', methods=['GET'])
-@login_is_required
+#@login_is_required
 def get_user(user_id):
   user = User.query.get(user_id)
   if user:
@@ -101,11 +103,15 @@ def get_user(user_id):
       "is_admin" : user.is_admin,
       "id" : user.id,
     }]
-    return jsonify({'user': jsonUser}), 200
-  return jsonify({'message': 'User not found.'}), 404
+    response = jsonify({'reviews': jsonUser})
+    response.headers.add("Access-Control-Allow-Credentials", "true")
+    return response, 200
+  response = jsonify({'message': 'User not found.'})
+  response.headers.add("Access-Control-Allow-Credentials", "true")
+  return response, 404
 
 @app.route('/users/<int:user_id>', methods=['PUT'])
-@login_is_required
+#@login_is_required
 def update_user(user_id):
   user = User.query.get(user_id)
   if user:
@@ -119,7 +125,7 @@ def update_user(user_id):
   return jsonify({'message': 'User not found.'}), 404
 
 @app.route('/users/<int:user_id>/religious_centers', methods=['GET'])
-@login_is_required
+#@login_is_required
 def get_user_religious_centers(user_id):
   user = User.query.get(user_id)
   if user:
@@ -140,7 +146,7 @@ def get_user_religious_centers(user_id):
   return jsonify({'message': 'User not found.'}), 404
 
 @app.route('/users/<int:user_id>/reviews', methods=['GET'])
-@login_is_required
+#@login_is_required
 def get_user_reviews(user_id):
   user = User.query.get(user_id)
   if user:
@@ -159,7 +165,7 @@ def get_user_reviews(user_id):
   return jsonify({'message': 'User not found.'}), 404
 
 @app.route('/users', methods=['GET'])
-@login_is_required
+#@login_is_required
 def get_all_users():
   users = User.query.all()
   data = []
@@ -177,7 +183,7 @@ def get_all_users():
 
 #CRUD religious_centers
 @app.route('/religious_centers', methods=['POST'])
-@login_is_required
+#@login_is_required
 def create_religious_center():
   data = request.get_json()
   new_center = ReligiousCenter(name=data['name'], lat=data['lat'], lng=data['lng'], user_id=data['user_id'], desc=data['desc'], image=data['image'], religion_type_id=data["religion_type_id"])
@@ -186,7 +192,7 @@ def create_religious_center():
   return jsonify({'message': 'Successfully created religious center.','center_id': new_center.id}), 201
 
 @app.route('/religious_centers/<int:center_id>', methods=['GET'])
-@login_is_required
+#@login_is_required
 def get_religious_center(center_id):
   center = ReligiousCenter.query.get(center_id)
   if center:
@@ -200,12 +206,11 @@ def get_religious_center(center_id):
         "image" : center.image,
         "religion_type_id" : center.religion_type_id
       }]
-      print("hej!")
       return jsonify({'religious_center': jsonCentre}), 200
   return jsonify({'message': 'Religious center not found.',}), 404
 
 @app.route('/religious_centers/<int:center_id>', methods=['PUT'])
-@login_is_required
+#@login_is_required
 def update_religious_center(center_id):
   center = ReligiousCenter.query.get(center_id)
   if center:
@@ -221,7 +226,7 @@ def update_religious_center(center_id):
   return jsonify({'message': 'Religious center not found.'}), 404
 
 @app.route('/religious_centers/<center_id>', methods=['DELETE'])
-@login_is_required
+#@login_is_required
 def delete_religious_center(center_id):
   center = ReligiousCenter.query.get(center_id)
   if center:
@@ -231,7 +236,7 @@ def delete_religious_center(center_id):
   return jsonify({'message': 'Religious center not found.'}), 404
 
 @app.route('/religious_centers/<int:center_id>/religion_type', methods=['GET'])
-@login_is_required
+#@login_is_required
 def get_religious_center_reviews(center_id):
   center = ReligiousCenter.query.get(center_id)
   if center:
@@ -269,7 +274,7 @@ def get_all_religion_centers():
 
 #CRUD review
 @app.route('/reviews', methods=['POST'])
-@login_is_required
+#@login_is_required
 def create_review():
   data = request.get_json()
   center = ReligiousCenter.query.get(data['religious_center_id'])
@@ -282,7 +287,7 @@ def create_review():
     return jsonify({'message': 'Incorrect! this religious_centre does not exist in our environemtn.', 'religious_centre_id': data['religious_center_id']}), 404
 
 @app.route('/reviews/<int:review_id>', methods=['GET'])
-@login_is_required
+#@login_is_required
 def get_review(review_id):
   review = Review.query.get(review_id)
   if review:
@@ -297,7 +302,7 @@ def get_review(review_id):
   return jsonify({'message': 'Review not found.'}), 404
 
 @app.route('/reviews/<int:review_id>', methods=['PUT'])
-@login_is_required
+#@login_is_required
 def update_review(review_id):
   review = Review.query.get(review_id)
   if review:
@@ -311,7 +316,7 @@ def update_review(review_id):
   return jsonify({'message': 'Review not found.'}), 404
 
 @app.route('/reviews/<int:review_id>', methods=['DELETE'])
-@login_is_required
+#@login_is_required
 def delete_review(review_id):
   review = Review.query.get(review_id)
   if review:
@@ -321,7 +326,7 @@ def delete_review(review_id):
   return jsonify({'message': 'Review not found.'}), 404
 
 @app.route('/reviews', methods=['GET'])
-@login_is_required
+#@login_is_required
 def get_all_reviews():
   reviews = Review.query.all()
   if reviews:
@@ -339,7 +344,7 @@ def get_all_reviews():
   return jsonify({'message': 'No reviews found.'}), 404
 #CRUD religious_types
 @app.route('/religion_types', methods=['POST'])
-@login_is_required
+#@login_is_required
 def create_religion_type():
   data = request.get_json()
   new_religion_type = ReligionType(name=data['name'], desc=data['desc'], image=data['image'])
@@ -348,7 +353,7 @@ def create_religion_type():
   return jsonify({'message': 'Successfully created religion type.', 'religion_type_id': new_religion_type.id}), 201
 
 @app.route('/religion_types/<int:religion_type_id>', methods=['GET'])
-@login_is_required
+#@login_is_required
 def get_religion_type(religion_type_id):
   religion_type = ReligionType.query.get(religion_type_id)
   if religion_type:
@@ -362,7 +367,7 @@ def get_religion_type(religion_type_id):
   return jsonify({'message': 'Religion type not found.'}), 404
 
 @app.route('/religion_types/<int:religion_type_id>', methods=['PUT'])
-@login_is_required
+#@login_is_required
 def update_religion_type(religion_type_id):
   religion_type = ReligionType.query.get(religion_type_id)
   if religion_type:
@@ -375,7 +380,7 @@ def update_religion_type(religion_type_id):
   return jsonify({'message': 'Religion type not found.'}), 404
 
 @app.route('/religion_types/<int:religion_type_id>', methods=['DELETE'])
-@login_is_required
+#@login_is_required
 def delete_religion_type(religion_type_id):
   religion_type = ReligionType.query.get(religion_type_id)
   if religion_type:
@@ -385,7 +390,7 @@ def delete_religion_type(religion_type_id):
   return jsonify({'message': 'Religion type not found.'}), 404
 
 @app.route('/religion_types', methods=['GET'])
-@login_is_required
+#@login_is_required
 def get_all_religion_types():
   religion_types = ReligionType.query.all()
   if religion_types:
@@ -407,8 +412,13 @@ if __name__ == '__main__':
 
 @app.route("/login", methods=['POST'])
 def login():
-  session["google_id"] = "Test"
-  return jsonify({'message': 'You are now logged', 'google id': session["google_id"] }), 201
+    session["google_id"]="test"
+    response = jsonify({'message': 'You are now logged in.', 'google id': session["google_id"]})
+    response.status_code = 201
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response, 201
 
 @app.route("/logout", methods=['GET'])
 def logout():
