@@ -68,7 +68,7 @@ with app.app_context():
 def login_is_required(function):
   def wrapper(*args, **kwargs):
     if "google_id" not in session:
-      return abort(401) # dokonaj aborcji na nieautoryzowanym użytkowniku
+      return abort(401)
     else:
       return function(*args, **kwargs)
   wrapper.__name__ = function.__name__
@@ -103,7 +103,7 @@ def get_user(user_id):
       "is_admin" : user.is_admin,
       "id" : user.id,
     }
-    response = jsonify({'reviews': jsonUser})
+    response = jsonify(jsonUser)
     response.headers.add("Access-Control-Allow-Credentials", "true")
     return response, 200
   response = jsonify({'message': 'User not found.'})
@@ -144,7 +144,7 @@ def get_user_religious_centers(user_id):
         "image" : centre.image,
         }
       data.append(jsonCentre)
-    return jsonify({'religious_centers': data}), 200
+    return jsonify(data), 200
   return jsonify({'message': 'User not found.'}), 404
 
 @app.route('/users/<int:user_id>/reviews', methods=['GET'])
@@ -163,7 +163,7 @@ def get_user_reviews(user_id):
         "user_id" : rev.user_id
       }
       data.append(jsonReview)
-    return jsonify({'reviews': data}), 200
+    return jsonify(data), 200
   return jsonify({'message': 'User not found.'}), 404
 
 @app.route('/users', methods=['GET'])
@@ -181,7 +181,7 @@ def get_all_users():
     "is_admin" : user.is_admin
     }
     data.append(jsonUsers)
-  return jsonify({'users': data}), 200
+  return jsonify(data), 200
 
 #CRUD religious_centers
 @app.route('/religious_centers', methods=['POST'])
@@ -212,7 +212,7 @@ def get_religious_center(center_id):
         "religion_type_id" : center.religion_type_id,
         "type_name" : type.name
       }
-      return jsonify({'religious_center': jsonCentre}), 200
+      return jsonify(jsonCentre), 200
   return jsonify({'message': 'Religious center not found.',}), 404
 
 @app.route('/religious_centers/<int:center_id>', methods=['PUT'])
@@ -257,7 +257,7 @@ def get_religious_center_reviews(center_id):
         "user_id" : rev.user_id
       }
       data.append(jsonReview)
-    return jsonify({'reviews': data}), 200
+    return jsonify(data), 200
   return jsonify({'message': 'Religious center not found.'}), 404
 
 @app.route('/religious_centers', methods=['GET'])
@@ -280,7 +280,7 @@ def get_all_religion_centers():
     "religion_type" : type.name
     }
     data.append(jsonReligionCentres)
-  return jsonify({'religion_centers': data}), 200
+  return jsonify(data), 200
 
 #CRUD review
 @app.route('/reviews', methods=['POST'])
@@ -308,7 +308,7 @@ def get_review(review_id):
         "review_text" : review.review_text,
         "user_id" : review.user_id
       }
-    return jsonify({'review': jsonReview}), 200
+    return jsonify(jsonReview), 200
   return jsonify({'message': 'Review not found.'}), 404
 
 @app.route('/reviews/<int:review_id>', methods=['PUT'])
@@ -350,7 +350,7 @@ def get_all_reviews():
           "user_id" : review.user_id
         }
       data.append(json_reviews)
-    return jsonify({'reviews': data}), 200
+    return jsonify(data), 200
   return jsonify({'message': 'No reviews found.'}), 404
 #CRUD religious_types
 @app.route('/religion_types', methods=['POST'])
@@ -371,7 +371,7 @@ def get_religion_type(religion_type_id):
         "id" : religion_type.id,
         "name" : religion_type.name
       }
-    return jsonify({'religion_type': jsonRelType}), 200
+    return jsonify(jsonRelType), 200
   return jsonify({'message': 'Religion type not found.'}), 404
 
 @app.route('/religion_types/<int:religion_type_id>', methods=['PUT'])
@@ -409,7 +409,7 @@ def get_all_religion_types():
           "name" : religion_type.name,
         }
       data.append(json_religion_types)
-    return jsonify({'religion_types': data}), 200
+    return jsonify(data), 200
   return jsonify({'message': 'No religion types found.'}), 404
 #########################################################################
 print("ok")
@@ -419,6 +419,7 @@ if __name__ == '__main__':
 
 @app.route("/login", methods=['POST'])
 def login():
+
     session["google_id"]="test"
     response = jsonify({'message': 'You are now logged in.', 'google id': session["google_id"]})
     response.status_code = 201
@@ -426,6 +427,7 @@ def login():
 
 @app.route("/logout", methods=['GET'])
 def logout():
+
   session.clear()
   return jsonify({'message': 'You have logout' }), 201
 
