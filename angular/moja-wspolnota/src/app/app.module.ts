@@ -20,8 +20,9 @@ import { MainViewComponent } from './main-view/main-view.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { InfoSideViewComponent } from './info-side-view/info-side-view.component';
 import { MarkersService } from './services/markers.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AddReligiousCenterModalComponent } from './modals/add-religious-center-modal/add-religious-center-modal.component';
+import { AuthInterceptor } from './auth.interceptor';
 import { ReligiousCenterInfoModalComponent } from './modals/religious-center-info-modal/religious-center-info-modal.component';
 
 const MaterialComponents = [
@@ -60,7 +61,8 @@ const MaterialComponents = [
     MaterialComponents
   ],
   providers: [
-    MarkersService
+    MarkersService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   entryComponents: [
     AddReligiousCenterModalComponent
