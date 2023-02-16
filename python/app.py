@@ -65,6 +65,17 @@ class Review(db.Model):
    nullable=False)
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+class Authentication(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    expiration_date = db.Column(db.DateTime, nullable=False)
+    token = db.Column(db.String(255), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __init__(self, expiration_date, token, user_id):
+        self.expiration_date = expiration_date
+        self.token = token
+        self.user_id = user_id
+
 with app.app_context():
     db.create_all()
 
@@ -194,7 +205,23 @@ def create_religious_center():
   new_center = ReligiousCenter(name=data['name'], lat=data['lat'], lng=data['lng'], user_id=data['user_id'], desc=data['desc'], image=data['image'], religion_type_id=data["religion_type_id"])
   db.session.add(new_center)
   db.session.commit()
-  return jsonify({'message': 'Successfully created religious center.','center_id': new_center.id}), 201
+  type = ReligionType.query.get(new_center.religion_type_id)
+  user = User.query.get(new_center.user_id)
+  jsonCentre = { 
+        "id" : new_center.id,
+        "name" : new_center.name,
+        "lat" : new_center.lat,
+        "lng" : new_center.lng,
+        "user_name" : user.name,
+        "user_id" : new_center.user_id,
+        "desc" : new_center.desc,
+        "image" : new_center.image,
+        "religion_type_id" : new_center.religion_type_id,
+        "type_name" : type.name,
+        "message": 'Successfully created religious center.',
+        "center_id": new_center.id
+      }
+  return jsonify(jsonCentre), 201
 
 @app.route('/religious_centers/<int:center_id>', methods=['GET'])
 #@login_is_required
