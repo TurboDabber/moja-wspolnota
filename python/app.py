@@ -1,3 +1,4 @@
+import datetime
 import os
 from flask import Flask, abort, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
@@ -47,20 +48,33 @@ class ReligiousCenter(db.Model):
   religion_type_id = db.Column(db.Integer, db.ForeignKey('religion_type.id'), nullable=False)
   reviews = db.relationship('Review', backref='religious_center', lazy=True)    
 
-class ReligiousAnnouncment(db.Model):
+class ReligiousAnnouncments(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   religious_center_id = db.Column(db.Integer, db.ForeignKey('religious_center.id'), nullable=False)
-  religious_center = db.relationship('ReligiousCenter', backref=db.backref('announcements', lazy=True))
+  religious_center = db.relationship('ReligiousCenter', backref=db.backref('announcments', lazy=True))
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-  user = db.relationship('User', backref=db.backref('announcements', lazy=True))
+  user = db.relationship('User', backref=db.backref('announcments', lazy=True))
   announcment = db.Column(db.String)
+  date = db.Column(db.String)
 
 class Review(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   religious_center_id = db.Column(db.Integer, db.ForeignKey('religious_center.id'), nullable=False)
   mark = db.Column(db.Integer, nullable=False)
-  review_text = db.Column(db.String, nullable=False)
+  review_text = db.Column(db.String,
+   nullable=False)
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+class Authentication(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    expiration_date = db.Column(db.DateTime, nullable=False)
+    token = db.Column(db.String(255), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __init__(self, expiration_date, token, user_id):
+        self.expiration_date = expiration_date
+        self.token = token
+        self.user_id = user_id
 
 with app.app_context():
     db.create_all()
@@ -411,6 +425,66 @@ def get_all_religion_types():
       data.append(json_religion_types)
     return jsonify(data), 200
   return jsonify({'message': 'No religion types found.'}), 404
+##################CRUD announcments
+
+@app.route('/announcments', methods=['POST'])
+#@login_is_required
+def create_religious_announcment():
+    data = request.get_json()
+    religious_center_id = data['religious_center_id']
+    user_id = data['user_id']
+    announcment = data['announcment']
+    
+    # Check if the religious center and user exists in the database
+    religious_center = ReligiousCenter.query.filter_by(id=religious_center_id).first()
+    user = User.query.filter_by(id=user_id).first()
+    
+    if not religious_center:
+        return jsonify({'message': f'Religious center with ID {religious_center_id} does not exist.'}), 404
+    
+    if not user:
+        return jsonify({'message': f'User with ID {user_id} does not exist.'}), 404
+    
+    # Create a new ReligiousAnnouncement and add it to the database
+    new_announcment = ReligiousAnnouncments(religious_center_id=religious_center_id, user_id=user_id, announcment=announcment,date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    db.session.add(new_announcment)
+    db.session.commit()
+    
+    return jsonify({'message': 'Successfully created religious announcment.', 'id': new_announcment.id}), 201
+
+@app.route('/announcments', methods=['GET'])
+#@login_is_required
+def get_all_religious_announcments():
+    religious_announcments = ReligiousAnnouncments.query.all()
+    data = []
+    for religious_announcment in religious_announcments:
+        json_announcment = {
+            'id': religious_announcment.id,
+            'religious_center_id': religious_announcment.religious_center_id,
+            'user_id': religious_announcment.user_id,
+            'announcment': religious_announcment.announcment,
+            'date' : religious_announcment.date
+        }
+        data.append(json_announcment)
+    return jsonify(data), 200
+
+@app.route('/announcments/<int:religious_announcment_id>', methods=['GET'])
+#@login_is_required
+def get_religious_announcments(religious_announcment_id):
+    religious_announcment = ReligiousAnnouncments.query.get(religious_announcment_id)
+    if religious_announcment:
+        json_announcment = {
+            'id': religious_announcment.id,
+            'religious_center_id': religious_announcment.religious_center_id,
+            'user_id': religious_announcment.user_id,
+            'announcment': religious_announcment.announcment,
+            'date' : religious_announcment.date
+        }
+        response = jsonify(json_announcment)
+        return response, 200
+    
+    response = jsonify({'message': 'Religious announcment not found.'})
+    return response, 404
 #########################################################################
 print("ok")
 if __name__ == '__main__':
