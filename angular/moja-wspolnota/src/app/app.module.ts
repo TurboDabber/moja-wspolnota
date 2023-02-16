@@ -4,6 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
+import { NgLetModule } from 'ng-let';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -21,6 +22,7 @@ import { InfoSideViewComponent } from './info-side-view/info-side-view.component
 import { MarkersService } from './services/markers.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AddReligiousCenterModalComponent } from './modals/add-religious-center-modal/add-religious-center-modal.component';
+import { ReligiousCenterInfoModalComponent } from './modals/religious-center-info-modal/religious-center-info-modal.component';
 
 const MaterialComponents = [
   MatFormFieldModule, 
@@ -42,6 +44,7 @@ const MaterialComponents = [
     NavbarComponent,
     InfoSideViewComponent,
     AddReligiousCenterModalComponent,
+    ReligiousCenterInfoModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,7 +53,8 @@ const MaterialComponents = [
     FormsModule,
     MaterialComponents,
     LeafletModule,
-    HttpClientModule
+    HttpClientModule,
+    NgLetModule
   ],
   exports: [
     MaterialComponents
