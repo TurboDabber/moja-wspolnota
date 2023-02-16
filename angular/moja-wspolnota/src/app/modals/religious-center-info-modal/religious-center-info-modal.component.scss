@@ -1,0 +1,12 @@
+.religious-center-info-modal-container {
+    min-width: 500px;
+
+    .data-container {
+        display: flex;
+        flex-direction: column;
+        
+        .data {
+            margin-bottom: 5px;
+        }
+    }
+}
