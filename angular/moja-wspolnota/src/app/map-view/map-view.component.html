@@ -1,5 +1,7 @@
 <div class="map"
      leaflet
      [leafletOptions]="options"
-     (leafletClick)="onMapClick('click', $event)">
+     [leafletLayers]="markers"
+     (leafletClick)="onMapClick('click', $event)"
+     (leafletMapReady)="loadMarkers()">
 </div>

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
 import { Observable, throwError } from 'rxjs';
 import { OnInit } from '@angular/core';
+import { AddReligiousCenterModel } from '../models/add-religious-center-model';
 
 @Injectable({
   providedIn: 'root'
@@ -86,11 +87,15 @@ export class HttpClientService{
     return this.http.get(`http://127.0.0.1:5000/users/${id}`,{});
   }
 
-  postCenter(user: any) {
-    return this.http.post('http://127.0.0.1:5000/religious_centers', user, { });
+  postCenter(religiousCenter: AddReligiousCenterModel) {
+    return this.http.post('http://127.0.0.1:5000/religious_centers', religiousCenter, { });
   }
 
   getCenter(id: number) {
     return this.http.get(`http://127.0.0.1:5000/religious_centers/${id}`,{  });
+  }
+
+  getAllCenters() {
+    return this.http.get(`http://127.0.0.1:5000/religious_centers`,{  });
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as Leaflet from 'leaflet';
+import { ReligiousCenterModel } from '../models/religious-center-model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,11 +9,24 @@ export class MarkersService {
 
   constructor() { }
 
-  addMarker(map: Leaflet.Map | undefined, latlng: Leaflet.LatLng): void {
-    if(map != null) {
-      const marker = Leaflet.marker(latlng);
-
-      marker.addTo(map);
-    }
+  addMarker(latLng: Leaflet.LatLng): Leaflet.Marker {
+    const marker = Leaflet.marker(
+      latLng,
+      {
+				icon: Leaflet.icon({
+					iconSize: [ 25, 41 ],
+					iconAnchor: [ 13, 41 ],
+					iconUrl: 'assets/leaflet/marker-icon.png',
+					iconRetinaUrl: 'assets/leaflet/marker-icon-2x.png',
+					shadowUrl: 'assets/leaflet/marker-shadow.png'
+				})
+			}
+    );
+    
+    return marker;
   }
+
+  loadMarkers(centersList: ReligiousCenterModel[], markers: Leaflet.Layer[]): Leaflet.Layer[] {
+    return markers;
+  } 
 }
