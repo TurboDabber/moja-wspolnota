@@ -205,7 +205,23 @@ def create_religious_center():
   new_center = ReligiousCenter(name=data['name'], lat=data['lat'], lng=data['lng'], user_id=data['user_id'], desc=data['desc'], image=data['image'], religion_type_id=data["religion_type_id"])
   db.session.add(new_center)
   db.session.commit()
-  return jsonify({'message': 'Successfully created religious center.','center_id': new_center.id}), 201
+  type = ReligionType.query.get(new_center.religion_type_id)
+  user = User.query.get(new_center.user_id)
+  jsonCentre = { 
+        "id" : new_center.id,
+        "name" : new_center.name,
+        "lat" : new_center.lat,
+        "lng" : new_center.lng,
+        "user_name" : user.name,
+        "user_id" : new_center.user_id,
+        "desc" : new_center.desc,
+        "image" : new_center.image,
+        "religion_type_id" : new_center.religion_type_id,
+        "type_name" : type.name,
+        "message": 'Successfully created religious center.',
+        "center_id": new_center.id
+      }
+  return jsonify(jsonCentre), 201
 
 @app.route('/religious_centers/<int:center_id>', methods=['GET'])
 #@login_is_required
@@ -426,6 +442,24 @@ def get_all_religion_types():
     return jsonify(data), 200
   return jsonify({'message': 'No religion types found.'}), 404
 ##################CRUD announcments
+def create_authentication(token, user_id):
+    expiration_date = datetime.datetime.now() + datetime.timedelta(minutes=25)
+    auth = Authentication(expiration_date=expiration_date, token=token, user_id=user_id)
+    db.session.add(auth)
+    db.session.commit()
+    return auth
+
+def verify_authentication(token):
+    auth = Authentication.query.filter_by(token=token).first()
+    if auth:
+        now = datetime.now()
+        if auth.expiration_date > now:
+            return True
+        else:
+            # If authentication has expired, delete it from the database
+            db.session.delete(auth)
+            db.session.commit()
+    return False
 
 @app.route('/announcments', methods=['POST'])
 #@login_is_required
