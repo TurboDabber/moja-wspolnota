@@ -11,6 +11,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatDialogModule } from '@angular/material/dialog';
 import { RegisterComponent } from './register/register.component';
 import { MapViewComponent } from './map-view/map-view.component';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
@@ -19,6 +20,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { InfoSideViewComponent } from './info-side-view/info-side-view.component';
 import { MarkersService } from './services/markers.service';
 import { HttpClientModule } from '@angular/common/http';
+import { AddReligiousCenterModalComponent } from './modals/add-religious-center-modal/add-religious-center-modal.component';
 
 const MaterialComponents = [
   MatFormFieldModule, 
@@ -26,7 +28,8 @@ const MaterialComponents = [
   MatInputModule,
   MatIconModule,
   MatButtonModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatDialogModule
 ]
 
 @NgModule({
@@ -38,6 +41,7 @@ const MaterialComponents = [
     MainViewComponent,
     NavbarComponent,
     InfoSideViewComponent,
+    AddReligiousCenterModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +57,9 @@ const MaterialComponents = [
   ],
   providers: [
     MarkersService
+  ],
+  entryComponents: [
+    AddReligiousCenterModalComponent
   ],
   bootstrap: [AppComponent]
 })

@@ -1,5 +1,9 @@
 import { AfterViewInit, Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import * as Leaflet from 'leaflet';
+import { AddReligiousCenterModalComponent } from '../modals/add-religious-center-modal/add-religious-center-modal.component';
+import { AddReligiousCenterModel } from '../models/add-religious-center-model';
+import { HttpClientService } from '../services/http-client.service';
 import { MarkersService } from '../services/markers.service';
 
 @Component({
@@ -7,10 +11,15 @@ import { MarkersService } from '../services/markers.service';
   templateUrl: './map-view.component.html',
   styleUrls: ['./map-view.component.scss']
 })
-export class MapViewComponent implements AfterViewInit{
-  constructor(private markersService: MarkersService) {}
+export class MapViewComponent {
+  constructor(
+    private markersService: MarkersService,
+    private dialog: MatDialog,
+    private httpClientService: HttpClientService
+  ) {}
 
-  private map: Leaflet.Map | undefined;
+  private currentLatLng: Leaflet.LatLng | undefined;
+  public markers: Leaflet.Layer[] = [];
 
   options: Leaflet.MapOptions = {
     layers: getLayers(),
@@ -20,18 +29,48 @@ export class MapViewComponent implements AfterViewInit{
 
   onMapClick(eventType: string, $event: any): void {
     console.log($event.latlng.toString());
-    this.markersService.addMarker(this.map, $event.latlng);
+    this.currentLatLng = $event.latlng;
+    if(this.currentLatLng != null) {
+      this.openDialogAddCenter();
+    }
   }
 
-  ngAfterViewInit(): void {
-    this.initMap();
+  private openDialogAddCenter(): void {
+    const dialogRef = this.dialog.open(AddReligiousCenterModalComponent,
+      {
+        data: {
+          name: '',
+          lat: this.currentLatLng?.lat,
+          lng: this.currentLatLng?.lng,
+          user_id: 1,
+          desc: 'string',
+          image: 'image',
+          religion_type_id: 1
+        }
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(this.currentLatLng != null && result != null) {
+        const marker = this.markersService.addMarker(this.currentLatLng);
+        this.markers.push(marker);
+        
+        this.httpClientService.postCenter(result).subscribe(response => {
+          console.log('center created successfully:', response);
+        }, error => {
+          console.error('Error creating center:', error);
+        });
+      }
+    });
   }
 
-  private initMap(): void {
-    this.map = Leaflet.map('map', {
-      zoom: 12,
-      center: new Leaflet.LatLng(50.28858, 18.67737)
-    })
+  async loadMarkers(): Promise<void> {
+    let centers: any;
+    await this.httpClientService.getAllCenters().subscribe(response => {
+      centers = response;
+      console.log('centers pulled successfully:', response);
+    }, error => {
+      console.error('Error pulling centers:', error);
+    });
   }
 }
 

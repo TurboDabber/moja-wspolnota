@@ -12,6 +12,6 @@ export interface ReligiousCenterModel {
     description: string;
     image: string;
     religionType: ReligionTypeModel;
-    announcements: AnnouncementModel[];
-    reviews: ReviewModel[];
+    announcements: AnnouncementModel[] | undefined;
+    reviews: ReviewModel[] | undefined;
 }
