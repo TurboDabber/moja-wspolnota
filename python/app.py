@@ -1,5 +1,6 @@
 import datetime
 import os
+import secrets
 from flask import Flask, abort, request, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -7,6 +8,7 @@ import bcrypt
 import sqlite3
 from requests import Session
 from sqlalchemy import create_engine
+from sqlalchemy import and_
 
 db = SQLAlchemy()
 app = Flask(__name__)
@@ -24,9 +26,9 @@ cors = CORS(app)
 class User(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   password = db.Column(db.String, nullable=False)
-  google_id = db.Column(db.String, nullable=True, unique=True)
+  google_id = db.Column(db.String, nullable=True)
   email = db.Column(db.String, nullable=False)
-  name = db.Column(db.String, nullable=False)
+  name = db.Column(db.String, nullable=False, unique=True)
   is_admin = db.Column(db.Boolean, nullable=False)
   religious_centers = db.relationship('ReligiousCenter', backref='user', lazy=True)
   reviews = db.relationship('Review', backref='user', lazy=True)
@@ -79,23 +81,19 @@ class Authentication(db.Model):
 with app.app_context():
     db.create_all()
 
-def login_is_required(function):
-  def wrapper(*args, **kwargs):
-    if "google_id" not in session:
-      return abort(401)
-    else:
-      return function(*args, **kwargs)
-  wrapper.__name__ = function.__name__
-  return wrapper
-
+def checkLogin():
+   return True
 #CRUD users
 @app.route('/users', methods=['POST'])
 def create_user():
   data = request.get_json()
   user1 = User.query.filter_by(google_id=data['google_id']).first()
+  user2 = User.query.filter_by(google_id=data['name']).first()
   if(user1):
     return jsonify({'message': 'User with such google_id exists.', 'user_google_id': data['google_id']}), 422
-  new_user = User( password=bcrypt.hashpw((data['password']).encode(), bcrypt.gensalt()),
+  if(user2):
+    return jsonify({'message': 'User with such name exists.', 'name': data['name']}), 422
+  new_user = User( password=bcrypt.hashpw((data['password']).encode('utf-8'), bcrypt.gensalt()),
                    google_id=data['google_id'], 
                    email=data['email'], 
                    name=data['name'], 
@@ -201,6 +199,9 @@ def get_all_users():
 @app.route('/religious_centers', methods=['POST'])
 #@login_is_required
 def create_religious_center():
+  authorization_header = request.headers.get('Authorization')
+  if verify_authentication(authorization_header) == False:
+    return jsonify({'message': 'Unauthorized'}), 401
   data = request.get_json()
   new_center = ReligiousCenter(name=data['name'], lat=data['lat'], lng=data['lng'], user_id=data['user_id'], desc=data['desc'], image=data['image'], religion_type_id=data["religion_type_id"])
   db.session.add(new_center)
@@ -248,6 +249,9 @@ def get_religious_center(center_id):
 @app.route('/religious_centers/<int:center_id>', methods=['PUT'])
 #@login_is_required
 def update_religious_center(center_id):
+  authorization_header = request.headers.get('Authorization')
+  if verify_authentication(authorization_header) == False:
+    return jsonify({'message': 'Unauthorized'}), 401
   center = ReligiousCenter.query.get(center_id)
   if center:
     data = request.get_json()
@@ -264,6 +268,9 @@ def update_religious_center(center_id):
 @app.route('/religious_centers/<center_id>', methods=['DELETE'])
 #@login_is_required
 def delete_religious_center(center_id):
+  authorization_header = request.headers.get('Authorization')
+  if verify_authentication(authorization_header) == False:
+    return jsonify({'message': 'Unauthorized'}), 401
   center = ReligiousCenter.query.get(center_id)
   if center:
     db.session.delete(center)
@@ -292,6 +299,7 @@ def get_religious_center_reviews(center_id):
 
 @app.route('/religious_centers', methods=['GET'])
 def get_all_religion_centers():
+  
   religion_centers = ReligiousCenter.query.all()
   data = []
   for religion_center in religion_centers:
@@ -316,6 +324,9 @@ def get_all_religion_centers():
 @app.route('/reviews', methods=['POST'])
 #@login_is_required
 def create_review():
+  authorization_header = request.headers.get('Authorization')
+  if verify_authentication(authorization_header) == False:
+    return jsonify({'message': 'Unauthorized'}), 401
   data = request.get_json()
   center = ReligiousCenter.query.get(data['religious_center_id'])
   if center:
@@ -344,6 +355,9 @@ def get_review(review_id):
 @app.route('/reviews/<int:review_id>', methods=['PUT'])
 #@login_is_required
 def update_review(review_id):
+  authorization_header = request.headers.get('Authorization')
+  if verify_authentication(authorization_header) == False:
+    return jsonify({'message': 'Unauthorized'}), 401
   review = Review.query.get(review_id)
   if review:
     data = request.get_json()
@@ -358,6 +372,9 @@ def update_review(review_id):
 @app.route('/reviews/<int:review_id>', methods=['DELETE'])
 #@login_is_required
 def delete_review(review_id):
+  authorization_header = request.headers.get('Authorization')
+  if verify_authentication(authorization_header) == False:
+    return jsonify({'message': 'Unauthorized'}), 401
   review = Review.query.get(review_id)
   if review:
     db.session.delete(review)
@@ -386,6 +403,9 @@ def get_all_reviews():
 @app.route('/religion_types', methods=['POST'])
 #@login_is_required
 def create_religion_type():
+  authorization_header = request.headers.get('Authorization')
+  if verify_authentication(authorization_header) == False:
+    return jsonify({'message': 'Unauthorized'}), 401
   data = request.get_json()
   new_religion_type = ReligionType(name=data['name'])
   db.session.add(new_religion_type)
@@ -407,6 +427,9 @@ def get_religion_type(religion_type_id):
 @app.route('/religion_types/<int:religion_type_id>', methods=['PUT'])
 #@login_is_required
 def update_religion_type(religion_type_id):
+  authorization_header = request.headers.get('Authorization')
+  if verify_authentication(authorization_header) == False:
+    return jsonify({'message': 'Unauthorized'}), 401
   religion_type = ReligionType.query.get(religion_type_id)
   if religion_type:
     data = request.get_json()
@@ -420,6 +443,9 @@ def update_religion_type(religion_type_id):
 @app.route('/religion_types/<int:religion_type_id>', methods=['DELETE'])
 #@login_is_required
 def delete_religion_type(religion_type_id):
+  authorization_header = request.headers.get('Authorization')
+  if verify_authentication(authorization_header) == False:
+    return jsonify({'message': 'Unauthorized'}), 401
   religion_type = ReligionType.query.get(religion_type_id)
   if religion_type:
     db.session.delete(religion_type)
@@ -446,6 +472,9 @@ def get_all_religion_types():
 @app.route('/announcments', methods=['POST'])
 #@login_is_required
 def create_religious_announcment():
+    authorization_header = request.headers.get('Authorization')
+    if verify_authentication(authorization_header) == False:
+      return jsonify({'message': 'Unauthorized'}), 401
     data = request.get_json()
     religious_center_id = data['religious_center_id']
     user_id = data['user_id']
@@ -502,32 +531,65 @@ def get_religious_announcments(religious_announcment_id):
     response = jsonify({'message': 'Religious announcment not found.'})
     return response, 404
 #########################################################################
-print("ok")
-if __name__ == '__main__':
-    app.run()
+def create_authentication(user_id):
+    a=Authentication.query.filter_by(id=user_id).first()
+    if a:
+      db.session.delete(a)
+      db.session.commit()
+    token = secrets.token_hex(128)
+    expiration_date = datetime.datetime.now() + datetime.timedelta(minutes=25)
+    auth = Authentication(expiration_date=expiration_date, token=token, user_id=user_id)
+    db.session.add(auth)
+    db.session.commit()
+    return auth
 
+def verify_authentication(token):
+    auth = Authentication.query.filter_by(token=token).first()
+    if auth:
+        now = datetime.datetime.now()
+        if auth.expiration_date > now:
+            return True
+        else:
+            # If authentication has expired, delete it from the database
+            db.session.delete(auth)
+            db.session.commit()
+    return False
 
 @app.route("/login", methods=['POST'])
 def login():
-
-    session["google_id"]="test"
-    response = jsonify({'message': 'You are now logged in.', 'google id': session["google_id"]})
+    data = request.get_json()
+    user_name =data["user_name"]
+    u=User.query.filter_by(name=user_name).first()
+    print(u.name)
+    if u.name != user_name:
+      return jsonify({'message':'inncorrect login or password - code 483u'}), 401
+    if(bcrypt.checkpw(data["password"].encode('utf-8'),u.password)==False):
+      return jsonify({'message':'inncorrect login or password - code 483p'}), 401
+    auth = create_authentication(u.id)
+    response = jsonify({'message': 'You are now logged in.', 
+                        'auth_token': auth.token, 
+                        'user_id': u.id,
+                        'user_name': u.name})
     response.status_code = 201
     return response, 201
 
 @app.route("/logout", methods=['GET'])
 def logout():
-
   session.clear()
   return jsonify({'message': 'You have logout' }), 201
 
 @app.route("/login-test", methods=['GET'])
 def loginTest():
-   if "google_id" not in session:
+   #if "google_id" not in session:
      return jsonify({'message': 'You are not logged'}), 401
-   else:
-     return jsonify({'message': 'You are logged as', 'google id': session["google_id"] }), 201
+   #else:
+     #return jsonify({'message': 'You are logged as', 'google id': session["google_id"] }), 201
 
 @app.route("/callback")
 def callback():
   pass
+
+print("ok")
+if __name__ == '__main__':
+    app.run()
+
