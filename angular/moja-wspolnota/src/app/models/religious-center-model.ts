@@ -8,10 +8,10 @@ export interface ReligiousCenterModel {
     name: string;
     lat: number;
     lng: number;
-    Owner: UserModel;
-    description: string;
+    user_name: string;
+    user_id: number;
+    desc: string;
     image: string;
-    religionType: ReligionTypeModel;
-    announcements: AnnouncementModel[] | undefined;
-    reviews: ReviewModel[] | undefined;
+    religion_type_id: number;
+    type_name: string;
 }
