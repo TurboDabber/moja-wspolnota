@@ -27,6 +27,11 @@ export class MarkersService {
   }
 
   loadMarkers(centersList: ReligiousCenterModel[], markers: Leaflet.Layer[]): Leaflet.Layer[] {
+    centersList.forEach(center => {
+      const latLng: Leaflet.LatLng = Leaflet.latLng(center.lat, center.lng);
+      const marker: Leaflet.Marker = this.addMarker(latLng);
+      markers.push(marker);
+    });
     return markers;
   } 
 }

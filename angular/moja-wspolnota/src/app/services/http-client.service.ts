@@ -4,6 +4,7 @@ import { map } from 'rxjs';
 import { Observable, throwError } from 'rxjs';
 import { OnInit } from '@angular/core';
 import { AddReligiousCenterModel } from '../models/add-religious-center-model';
+import { ReligiousCenterModel } from '../models/religious-center-model';
 
 @Injectable({
   providedIn: 'root'
@@ -96,6 +97,6 @@ export class HttpClientService{
   }
 
   getAllCenters() {
-    return this.http.get(`http://127.0.0.1:5000/religious_centers`,{  });
+    return this.http.get<ReligiousCenterModel[]>(`http://127.0.0.1:5000/religious_centers`,{  });
   }
 }

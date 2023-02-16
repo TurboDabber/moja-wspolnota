@@ -64,9 +64,8 @@ export class MapViewComponent {
   }
 
   async loadMarkers(): Promise<void> {
-    let centers: any;
     await this.httpClientService.getAllCenters().subscribe(response => {
-      centers = response;
+      this.markers = this.markersService.loadMarkers(response, this.markers);
       console.log('centers pulled successfully:', response);
     }, error => {
       console.error('Error pulling centers:', error);
