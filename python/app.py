@@ -26,10 +26,8 @@ cors = CORS(app)
 class User(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   password = db.Column(db.String, nullable=False)
-  google_id = db.Column(db.String, nullable=True)
   email = db.Column(db.String, nullable=False)
   name = db.Column(db.String, nullable=False, unique=True)
-  is_admin = db.Column(db.Boolean, nullable=False)
   religious_centers = db.relationship('ReligiousCenter', backref='user', lazy=True)
   reviews = db.relationship('Review', backref='user', lazy=True)
 
@@ -87,17 +85,12 @@ def checkLogin():
 @app.route('/users', methods=['POST'])
 def create_user():
   data = request.get_json()
-  user1 = User.query.filter_by(google_id=data['google_id']).first()
-  user2 = User.query.filter_by(google_id=data['name']).first()
-  if(user1):
-    return jsonify({'message': 'User with such google_id exists.', 'user_google_id': data['google_id']}), 422
+  user2 = User.query.filter_by(name=data['name']).first()
   if(user2):
     return jsonify({'message': 'User with such name exists.', 'name': data['name']}), 422
   new_user = User( password=bcrypt.hashpw((data['password']).encode('utf-8'), bcrypt.gensalt()),
-                   google_id=data['google_id'], 
                    email=data['email'], 
-                   name=data['name'], 
-                   is_admin = data['is_admin'])
+                   name=data['name'])
   db.session.add(new_user)
   db.session.commit()
   return jsonify({'message': 'Successfully created user.', 'user_id': new_user.id}), 201
@@ -109,10 +102,8 @@ def get_user(user_id):
   if user:
     jsonUser = {
       "password" : "****",
-      "google_id" : user.google_id,
       "email" : user.email,
       "name" : user.name,
-      "is_admin" : user.is_admin,
       "id" : user.id,
     }
     response = jsonify(jsonUser)
@@ -131,7 +122,6 @@ def update_user(user_id):
     user.password = bcrypt.hashpw((data['password']).encode(), bcrypt.gensalt())
     user.email = data['email']
     user.name = data['name']
-    user.is_admin = data['is_admin']
     db.session.commit()
     return jsonify({'message': 'Successfully updated user.', 'user': user.__dict__}), 200
   return jsonify({'message': 'User not found.'}), 404
@@ -187,10 +177,8 @@ def get_all_users():
     jsonUsers={
     "id" : user.id,
     "password" :  "****",
-    "google_id" : user.google_id,
     "email" : user.email,
     "name" : user.name,
-    "is_admin" : user.is_admin
     }
     data.append(jsonUsers)
   return jsonify(data), 200
@@ -581,7 +569,7 @@ def logout():
 @app.route("/login-test", methods=['GET'])
 def loginTest():
    #if "google_id" not in session:
-     return jsonify({'message': 'You are not logged'}), 401
+     return jsonify({'message': 'This is not working now :()'}), 404
    #else:
      #return jsonify({'message': 'You are logged as', 'google id': session["google_id"] }), 201
 
