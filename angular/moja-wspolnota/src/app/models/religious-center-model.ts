@@ -13,5 +13,5 @@ export interface ReligiousCenterModel {
     desc: string;
     image: string;
     religion_type_id: number;
-    type_name: string;
+    religion_type: string;
 }

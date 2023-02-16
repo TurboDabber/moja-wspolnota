@@ -1,0 +1,71 @@
+<div class="religious-center-info-modal-container">
+    <h1 mat-dialog-title>
+        Informacje o wspólnocie
+    </h1>
+
+    <div mat-dialog-content
+         class="data-container">
+         <mat-form-field class="data">
+            <mat-label>
+                Nazwa wspólnoty
+            </mat-label>
+            <input matInput
+                   readonly
+                   [(ngModel)]="data.name">
+        </mat-form-field>
+
+        <mat-form-field class="data">
+            <mat-label>
+                Opis
+            </mat-label>   
+            <input matInput
+                   readonly
+                   [(ngModel)]="data.desc">
+        </mat-form-field>
+
+        <mat-form-field class="data">
+            <mat-label>
+                Typ religii
+            </mat-label>   
+            <input matInput
+                   readonly
+                   [(ngModel)]="data.religion_type">
+        </mat-form-field>
+
+        <mat-form-field class="data">
+            <mat-label>
+                Założyciel
+            </mat-label>   
+            <input matInput
+                   readonly
+                   [(ngModel)]="data.user_name">
+        </mat-form-field>
+
+        <mat-form-field class="data">
+            <mat-label>
+                Szerokość geograficzna
+            </mat-label>   
+            <input matInput
+                   readonly
+                   [(ngModel)]="data.lat">
+        </mat-form-field>
+
+        <mat-form-field class="data">
+            <mat-label>
+                Długość geograficzna
+            </mat-label>   
+            <input matInput
+                   readonly
+                   [(ngModel)]="data.lng">
+        </mat-form-field>
+            
+        <mat-form-field class="data">
+            <mat-label>
+                Zdjęcie
+            </mat-label>   
+            <input matInput
+                   readonly
+                   [(ngModel)]="data.image">
+        </mat-form-field>
+    </div>
+</div>
