@@ -15,7 +15,7 @@ db.init_app(app)
 
 _GOOGLE_CLIENT_ID_ = "852644168320-677khcsl54gigpuifr81gqqrp9rin0s3.apps.googleusercontent.com"
 
-app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 cors = CORS(app)
 #flow = Flow.from_cleint_secrets_file()
@@ -95,14 +95,14 @@ def create_user():
 def get_user(user_id):
   user = User.query.get(user_id)
   if user:
-    jsonUser = [{
+    jsonUser = {
       "password" : "****",
       "google_id" : user.google_id,
       "email" : user.email,
       "name" : user.name,
       "is_admin" : user.is_admin,
       "id" : user.id,
-    }]
+    }
     response = jsonify({'reviews': jsonUser})
     response.headers.add("Access-Control-Allow-Credentials", "true")
     return response, 200
@@ -132,15 +132,17 @@ def get_user_religious_centers(user_id):
     data=[]
     religious_centers = ReligiousCenter.query.filter_by(user_id=user.id).all()
     for centre in religious_centers:
-      jsonCentre = [{ 
+      
+      jsonCentre = { 
         "id" : centre.id,
         "name" : centre.name,
         "lat" : centre.lat,
         "lng" : centre.lng,
         "user_id" : centre.user_id,
+        "user": user,
         "desc" : centre.desc,
         "image" : centre.image,
-        }]
+        }
       data.append(jsonCentre)
     return jsonify({'religious_centers': data}), 200
   return jsonify({'message': 'User not found.'}), 404
@@ -153,13 +155,13 @@ def get_user_reviews(user_id):
     data = []
     reviews = Review.query.filter_by(user_id=user.id).all()
     for rev in reviews:
-      jsonReview= [{
+      jsonReview= {
         "id" : rev.id,
         "religious_center_id" : rev.religious_center_id,
         "mark" : rev.mark,
         "review_text" : rev.review_text,
         "user_id" : rev.user_id
-      }]
+      }
       data.append(jsonReview)
     return jsonify({'reviews': data}), 200
   return jsonify({'message': 'User not found.'}), 404
@@ -170,14 +172,14 @@ def get_all_users():
   users = User.query.all()
   data = []
   for user in users:
-    jsonUsers=[{
+    jsonUsers={
     "id" : user.id,
     "password" :  "****",
     "google_id" : user.google_id,
     "email" : user.email,
     "name" : user.name,
     "is_admin" : user.is_admin
-    }]
+    }
     data.append(jsonUsers)
   return jsonify({'users': data}), 200
 
@@ -196,16 +198,20 @@ def create_religious_center():
 def get_religious_center(center_id):
   center = ReligiousCenter.query.get(center_id)
   if center:
-      jsonCentre = [{ 
+      type = ReligionType.query.get(center.religion_type_id)
+      user = User.query.get(center.user_id)
+      jsonCentre = { 
         "id" : center.id,
         "name" : center.name,
         "lat" : center.lat,
         "lng" : center.lng,
+        "user_name" : user.name,
         "user_id" : center.user_id,
         "desc" : center.desc,
         "image" : center.image,
-        "religion_type_id" : center.religion_type_id
-      }]
+        "religion_type_id" : center.religion_type_id,
+        "type_name" : type.name
+      }
       return jsonify({'religious_center': jsonCentre}), 200
   return jsonify({'message': 'Religious center not found.',}), 404
 
@@ -243,13 +249,13 @@ def get_religious_center_reviews(center_id):
     data = []
     reviews = Review.query.filter_by(religious_center_id=center_id).all()
     for rev in reviews:
-      jsonReview= [{
+      jsonReview= {
         "id" : rev.id,
         "religious_center_id" : rev.religious_center_id,
         "mark" : rev.mark,
         "review_text" : rev.review_text,
         "user_id" : rev.user_id
-      }]
+      }
       data.append(jsonReview)
     return jsonify({'reviews': data}), 200
   return jsonify({'message': 'Religious center not found.'}), 404
@@ -259,16 +265,20 @@ def get_all_religion_centers():
   religion_centers = ReligiousCenter.query.all()
   data = []
   for religion_center in religion_centers:
-    jsonReligionCentres=[{
+    type = ReligionType.query.get(religion_center.religion_type_id)
+    user = User.query.get(religion_center.user_id)
+    jsonReligionCentres={
     "id" : religion_center.id,
     "name" : religion_center.name,
     "lat" : religion_center.lat,
     "lng" : religion_center.lng,
     "user_id" : religion_center.user_id,
+    "user_name" : user.name,
     "desc" : religion_center.desc,
     "image" : religion_center.image,
-    "religion_type_id" : religion_center.religion_type_id
-    }]
+    "religion_type_id" : religion_center.religion_type_id,
+    "religion_type" : type.name
+    }
     data.append(jsonReligionCentres)
   return jsonify({'religion_centers': data}), 200
 
@@ -291,13 +301,13 @@ def create_review():
 def get_review(review_id):
   review = Review.query.get(review_id)
   if review:
-    jsonReview = [{
+    jsonReview = {
         "id" : review.id,
         "religious_center_id" : review.religious_center_id,
         "mark" : review.mark,
         "review_text" : review.review_text,
         "user_id" : review.user_id
-      }]
+      }
     return jsonify({'review': jsonReview}), 200
   return jsonify({'message': 'Review not found.'}), 404
 
@@ -332,13 +342,13 @@ def get_all_reviews():
   if reviews:
     data = []
     for review in reviews:
-      json_reviews=[{
+      json_reviews={
           "id" : review.id,
           "religious_center_id" : review.religious_center_id,
           "mark" : review.mark,
           "review_text" : review.review_text,
           "user_id" : review.user_id
-        }]
+        }
       data.append(json_reviews)
     return jsonify({'reviews': data}), 200
   return jsonify({'message': 'No reviews found.'}), 404
@@ -347,7 +357,7 @@ def get_all_reviews():
 #@login_is_required
 def create_religion_type():
   data = request.get_json()
-  new_religion_type = ReligionType(name=data['name'], desc=data['desc'], image=data['image'])
+  new_religion_type = ReligionType(name=data['name'])
   db.session.add(new_religion_type)
   db.session.commit()
   return jsonify({'message': 'Successfully created religion type.', 'religion_type_id': new_religion_type.id}), 201
@@ -357,12 +367,10 @@ def create_religion_type():
 def get_religion_type(religion_type_id):
   religion_type = ReligionType.query.get(religion_type_id)
   if religion_type:
-    jsonRelType = [{
+    jsonRelType = {
         "id" : religion_type.id,
-        "name" : religion_type.name,
-        "desc" : religion_type.desc,
-        "image" : religion_type.image
-      }]
+        "name" : religion_type.name
+      }
     return jsonify({'religion_type': jsonRelType}), 200
   return jsonify({'message': 'Religion type not found.'}), 404
 
@@ -396,12 +404,10 @@ def get_all_religion_types():
   if religion_types:
     data = []
     for religion_type in religion_types:
-      json_religion_types=[{
+      json_religion_types={
           "id" : religion_type.id,
           "name" : religion_type.name,
-          "desc" : religion_type.desc,
-          "image" : religion_type.image
-        }]
+        }
       data.append(json_religion_types)
     return jsonify({'religion_types': data}), 200
   return jsonify({'message': 'No religion types found.'}), 404
@@ -410,14 +416,12 @@ print("ok")
 if __name__ == '__main__':
     app.run()
 
+
 @app.route("/login", methods=['POST'])
 def login():
     session["google_id"]="test"
     response = jsonify({'message': 'You are now logged in.', 'google id': session["google_id"]})
     response.status_code = 201
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add('Access-Control-Allow-Headers', "*")
-    response.headers.add('Access-Control-Allow-Methods', "*")
     return response, 201
 
 @app.route("/logout", methods=['GET'])
