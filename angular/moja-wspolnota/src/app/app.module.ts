@@ -26,6 +26,7 @@ import { AddReligiousCenterModalComponent } from './modals/add-religious-center-
 import { AuthInterceptor } from './auth.interceptor';
 import { ReligiousCenterInfoModalComponent } from './modals/religious-center-info-modal/religious-center-info-modal.component';
 import { InfoDialogModal } from './modals/info-dialog-modal/info-dialog-modal.component';
+import { AddReligionTypeModalComponent } from './modals/add-religion-type-modal/add-religion-type-modal.component';
 
 const MaterialComponents = [
   MatFormFieldModule, 
@@ -50,6 +51,7 @@ const MaterialComponents = [
     AddReligiousCenterModalComponent,
     ReligiousCenterInfoModalComponent,
     InfoDialogModal,
+    AddReligionTypeModalComponent,
   ],
   imports: [
     BrowserModule,

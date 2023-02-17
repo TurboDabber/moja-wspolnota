@@ -1,0 +1,34 @@
+<div class="add-religious-center-modal-container">
+    <h1 mat-dialog-title>
+        Dodaj nowy typ wspólnot
+    </h1>
+
+    <div mat-dialog-content
+         class="input-container">
+         <mat-form-field class="input">
+            <mat-label>
+                Nazwa wspólnoty
+            </mat-label>
+            <input matInput
+                   required="true"
+                   [(ngModel)]="data.name">
+        </mat-form-field>
+    </div>
+
+    <div mat-dialog-actions
+         class="button-container">
+        <button mat-raised-button
+                color="primary" 
+                class="button"
+                (click)="onNoClick()">
+            Anuluj
+        </button>
+        <button mat-raised-button
+                color="primary"
+                class="button"
+                [disabled]="data.name.length <= 0"
+                [mat-dialog-close]="data">
+            Dodaj
+        </button>
+    </div>
+</div>

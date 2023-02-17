@@ -1,8 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AddReligiousCenterModel } from 'src/app/models/add-religious-center-model';
 import { ReligionTypeModel } from 'src/app/models/religion-type-model';
 import { HttpClientService } from 'src/app/services/http-client.service';
+import { AddReligionTypeModalComponent } from '../add-religion-type-modal/add-religion-type-modal.component';
 
 @Component({
   selector: 'app-add-religious-center-modal',
@@ -13,7 +14,8 @@ export class AddReligiousCenterModalComponent implements OnInit{
   constructor(
     public dialogRef: MatDialogRef<AddReligiousCenterModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AddReligiousCenterModel,
-    private httpClientService: HttpClientService
+    private httpClientService: HttpClientService,
+    private dialog: MatDialog
   ) {}
   public selectedFileName: string = '';
   selectedFiles: File| undefined;
@@ -37,6 +39,26 @@ export class AddReligiousCenterModalComponent implements OnInit{
     });
   }
 
+  DispCreateTypeModal(eventType: string, $event: any)
+  {
+    console.log("click! type modal")
+    const dialogRef = this.dialog.open(AddReligionTypeModalComponent,
+      {
+        data: {
+          name: '',
+        }
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+        this.httpClientService.postReligionType(result).subscribe(response => {
+          console.log('type created successfully:', response);
+          this.getReligionTypes();
+        }, error => {
+          console.error('Error creating type:', error);
+        });
+      });
+  }
+
   onImageSelected(event: any) {
     const file = event.target.files[0];
   
@@ -52,7 +74,6 @@ export class AddReligiousCenterModalComponent implements OnInit{
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-  
         const MAX_WIDTH = 200;
         const MAX_HEIGHT = 200;
         let width = img.width;
@@ -68,7 +89,6 @@ export class AddReligiousCenterModalComponent implements OnInit{
             height = MAX_HEIGHT;
           }
         }
-        
         canvas.width = width;
         canvas.height = height;
         if (ctx) {

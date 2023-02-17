@@ -3,62 +3,57 @@
         Dodaj wspólnotę
     </h1>
 
-    <div mat-dialog-content
-         class="input-container">
-         <mat-form-field class="input">
+    <div mat-dialog-content class="input-container">
+        <mat-form-field class="input">
             <mat-label>
                 Nazwa wspólnoty
             </mat-label>
-            <input matInput
-                   required="true"
-                   [(ngModel)]="data.name">
+            <input matInput required="true" [(ngModel)]="data.name">
         </mat-form-field>
 
         <mat-form-field class="input">
             <mat-label>
                 Opis
-            </mat-label>   
-            <input matInput
-                   [(ngModel)]="data.desc">
+            </mat-label>
+            <input matInput [(ngModel)]="data.desc">
         </mat-form-field>
 
         <mat-form-field class="input">
             <mat-label>
                 Typ religii
-            </mat-label>   
-            <mat-select [(ngModel)]="data.religion_type_id"
-                        required>
-                <mat-option *ngFor="let type of religionTypes" [value]="type.id">
-                    {{ type.name }}
-                </mat-option>
+            </mat-label>
+            <mat-select [(ngModel)]="data.religion_type_id" required>
+                <div class="custom-panel"> 
+                    <mat-option *ngFor="let type of religionTypes" [value]="type.id">
+                        {{ type.name }}
+                    </mat-option>
+                    <mat-option (click)="DispCreateTypeModal('click', $event)">
+                        <button mat-raised-button color="primary" class="button" >
+                            Dodaj swój typ wspólnoty!
+                        </button>
+                    </mat-option>
+                </div>
             </mat-select>
-        </mat-form-field >
+        </mat-form-field>
         <mat-form-field class="columns">
             <mat-label *ngIf="selectedFileName; else newFile">{{selectedFileName}}</mat-label>
             <ng-template #newFile>
-              <mat-label>Wybierz plik</mat-label>
+                <mat-label>Wybierz plik</mat-label>
             </ng-template>
             <input matInput disabled>
             <button mat-icon-button matSuffix (click)="fileInput.click()">
-              <mat-icon>attach_file</mat-icon>
+                <mat-icon>attach_file</mat-icon>
             </button>
             <input hidden (change)="onImageSelected($event)" #fileInput type="file" id="file">
-          </mat-form-field>
+        </mat-form-field>
     </div>
 
-    <div mat-dialog-actions
-         class="button-container">
-        <button mat-raised-button
-                color="primary" 
-                class="button"
-                (click)="onNoClick()">
+    <div mat-dialog-actions class="button-container">
+        <button mat-raised-button color="primary" class="button" (click)="onNoClick()">
             Anuluj
         </button>
-        <button mat-raised-button
-                color="primary"
-                class="button"
-                [disabled]="data.name.length <= 0"
-                [mat-dialog-close]="data">
+        <button mat-raised-button color="primary" class="button" [disabled]="data.name.length <= 0"
+            [mat-dialog-close]="data">
             Dodaj
         </button>
     </div>

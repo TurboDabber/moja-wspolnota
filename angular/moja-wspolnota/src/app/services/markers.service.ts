@@ -55,7 +55,8 @@ export class MarkersService {
     `<br/><div><b>Typ religii:</b> <br/><i>${ center.religion_type }</i></div>` +
     `<br/><div><b>Założyciel:</b> <br/><i>${ center.user_name }</i></div>` +
     `<br/><div><b>Szerokość geograficzna:</b><i>${ center.lat }</i></div>` +
-    `<br/><div><b>Długość geograficzna:</b><i>${ center.lng }</i></div>`;
+    `<br/><div><b>Długość geograficzna:</b><i>${ center.lng }</i></div>` +
+    `<br/><div><b>Zdjęcie:</b></div>`;
      if (center.image) {
             html += `<img src="${ center.image }" alt="Zdjęcie ośrodka religijnego"/>`;
      }

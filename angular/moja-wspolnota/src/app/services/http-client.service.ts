@@ -6,6 +6,7 @@ import { OnInit } from '@angular/core';
 import { AddReligiousCenterModel } from '../models/add-religious-center-model';
 import { ReligiousCenterModel } from '../models/religious-center-model';
 import { ReligionTypeModel } from '../models/religion-type-model';
+import { AddReligionTypeModel } from '../models/add-religion-type-model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +15,11 @@ export class HttpClientService{
   
   constructor(private http: HttpClient) { }
 
-  async Init()
+  async Test()
   {
       console.log("init")
       //test//TO DELETE
-      this.login("student:)","piwo")
+      //this.login("student:)","piwo")
       //post
       const user = {
         password: 'ciupapi',
@@ -98,6 +99,10 @@ export class HttpClientService{
 
   postCenter(religiousCenter: AddReligiousCenterModel) {
     return this.http.post<ReligiousCenterModel>('http://127.0.0.1:5000/religious_centers', religiousCenter, { });
+  }
+
+  postReligionType(religionType: AddReligionTypeModel) {
+    return this.http.post<ReligionTypeModel>('http://127.0.0.1:5000/religion_types', religionType, { });
   }
 
   getCenter(id: number) {
