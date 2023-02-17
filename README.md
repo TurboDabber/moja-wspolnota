@@ -29,3 +29,14 @@ uruchom terminal w moja-wspolnota/angular/moja-wspolnota
 2. zainstaluj wszystko: npm install
 
 3. Uruchom npm start
+
+
+
+
+PS. Status na 18.02.2022 Nie brany już pod uwagę
+Dodano oznaczenie sugerujący że na mapie znajdują się piny dodane przez aktywnego użytkownika, 
+Dodano wygodne wsparcie zdjęć oraz ich wyświetlanie, niestety muszą się skalować
+![image](https://user-images.githubusercontent.com/43883128/219725040-0a3ca6fc-461d-4ef3-a94e-7cb3ddd8d9bf.png)
+![image](https://user-images.githubusercontent.com/43883128/219727476-99194f4d-171d-443c-b73c-633519cdb7e7.png)
+![image](https://user-images.githubusercontent.com/43883128/219728214-28b1ffe7-4fc3-4e79-97cf-973b93cc4421.png)
+
