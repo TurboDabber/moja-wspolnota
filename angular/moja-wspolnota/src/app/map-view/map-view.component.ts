@@ -55,6 +55,14 @@ export class MapViewComponent {
         
         this.httpClientService.postCenter(result).subscribe(response => {
           marker.bindPopup(this.markersService.bindData(response));
+          if (localStorage.getItem('user_id') === response.user_id.toString()) {
+            marker.setIcon(Leaflet.icon({
+              iconUrl: 'assets/users-icon.png',
+              iconSize: [ 25, 41 ],
+              iconAnchor: [ 13, 41 ],
+              shadowUrl: 'assets/leaflet/marker-shadow.png'
+            }));
+          }
           this.markers.push(marker);
           console.log('center created successfully:', response);
         }, error => {

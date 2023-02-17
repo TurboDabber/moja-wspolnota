@@ -36,6 +36,14 @@ export class MarkersService {
       const latLng: Leaflet.LatLng = Leaflet.latLng(center.lat, center.lng);
       const marker: Leaflet.Marker = this.addMarker(latLng);
       marker.bindPopup(this.bindData(center));
+      if (localStorage.getItem('user_id') === center.user_id.toString()) {
+        marker.setIcon(Leaflet.icon({
+          iconUrl: 'assets/users-icon.png',
+          iconSize: [ 25, 41 ],
+					iconAnchor: [ 13, 41 ],
+					shadowUrl: 'assets/leaflet/marker-shadow.png'
+        }));
+      }
       markers.push(marker);
     });
     return markers;
