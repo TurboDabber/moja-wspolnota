@@ -1,5 +1,6 @@
 # moja-wspolnota
 by: Paweł L., Wiktoria G. & Paweł K.
+Technologie: Angular, Leaflet, Python - Flask
 Aplikacja umożliwia przeglądanie wspólnot na mapie (Leaflet) przez użytkowników nie-zalogowanych, oraz dodawanie nowych centrów dla użytkowników zalogowanych. 
 Użytkownik może zarejestrować się przez stronę oraz później zalogować.
 Aplikacja zgodna z standardem REST.API, logowanie przebiega przez uzyskanie przez frontend tokena autoryzacyjnego z backendu i przesyłanie go w nagłówku.
