@@ -33,14 +33,17 @@
                 </mat-option>
             </mat-select>
         </mat-form-field >
-            
-        <mat-form-field class="input">
-            <mat-label>
-                Zdjęcie
-            </mat-label>   
-            <input matInput
-                   [(ngModel)]="data.image">
-        </mat-form-field>
+        <mat-form-field class="columns">
+            <mat-label *ngIf="selectedFileName; else newFile">{{selectedFileName}}</mat-label>
+            <ng-template #newFile>
+              <mat-label>Wybierz plik</mat-label>
+            </ng-template>
+            <input matInput disabled>
+            <button mat-icon-button matSuffix (click)="fileInput.click()">
+              <mat-icon>attach_file</mat-icon>
+            </button>
+            <input hidden (change)="onImageSelected($event)" #fileInput type="file" id="file">
+          </mat-form-field>
     </div>
 
     <div mat-dialog-actions

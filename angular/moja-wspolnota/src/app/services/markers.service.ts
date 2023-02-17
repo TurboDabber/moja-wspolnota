@@ -50,12 +50,16 @@ export class MarkersService {
   }
   
   bindData(center: ReligiousCenterModel): string {
-    return `<div>Nazwa wspólnoty: ${ center.name }</div>` + 
-           `<div>Opis: ${ center.desc }</div>` +
-           `<div>Typ religii: ${ center.religion_type }</div>` +
-           `<div>Założyciel: ${ center.user_name }</div>` +
-           `<div>Szerokość geograficzna: ${ center.lat }</div>` +
-           `<div>Długość geograficzna: ${ center.lng }</div>`;
+    let html = `<div><b>Nazwa wspólnoty:</b> <h1> ${ center.name } </h1></div>` + 
+    `<div><b>Opis:</b> <br/><i> ${ center.desc }</i></div>` +
+    `<br/><div><b>Typ religii:</b> <br/><i>${ center.religion_type }</i></div>` +
+    `<br/><div><b>Założyciel:</b> <br/><i>${ center.user_name }</i></div>` +
+    `<br/><div><b>Szerokość geograficzna:</b><i>${ center.lat }</i></div>` +
+    `<br/><div><b>Długość geograficzna:</b><i>${ center.lng }</i></div>`;
+     if (center.image) {
+            html += `<img src="${ center.image }" alt="Zdjęcie ośrodka religijnego"/>`;
+     }
+     return html;
   }
 
   private openInfoDialog(center: ReligiousCenterModel): void {
