@@ -5,12 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { OnInit } from '@angular/core';
 import { AddReligiousCenterModel } from '../models/add-religious-center-model';
 import { ReligiousCenterModel } from '../models/religious-center-model';
-
-interface LoginResponse {
-  auth_token: string;
-  user_id: bigint;
-  user_name: string;
-}
+import { ReligionTypeModel } from '../models/religion-type-model';
 
 @Injectable({
   providedIn: 'root'
@@ -80,17 +75,7 @@ export class HttpClientService{
   }
 
   login(_user_name: string, _password: string) {
-    return this.http.post('http://127.0.0.1:5000/login',{user_name: _user_name, password: _password},{ observe: 'response'}).subscribe(response => {
-      const loginResponse = response.body as LoginResponse;
-      console.log(loginResponse)
-      localStorage.setItem('auth_token', loginResponse.auth_token);
-      console.log(loginResponse.auth_token)
-      console.log("EEEE" + localStorage.getItem('auth_token'))
-      localStorage.setItem('user_id', loginResponse.user_id.toString() );
-      localStorage.setItem('user_name', loginResponse.user_name.toString() );
-      console.log(response.headers);
-      console.log(response.body);
-    })
+    return this.http.post('http://127.0.0.1:5000/login',{user_name: _user_name, password: _password},{ observe: 'response'});
   }
 
   logout() {
@@ -112,7 +97,7 @@ export class HttpClientService{
   }
 
   postCenter(religiousCenter: AddReligiousCenterModel) {
-    return this.http.post('http://127.0.0.1:5000/religious_centers', religiousCenter, { });
+    return this.http.post<ReligiousCenterModel>('http://127.0.0.1:5000/religious_centers', religiousCenter, { });
   }
 
   getCenter(id: number) {
@@ -121,5 +106,9 @@ export class HttpClientService{
 
   getAllCenters() {
     return this.http.get<ReligiousCenterModel[]>(`http://127.0.0.1:5000/religious_centers`,{  });
+  }
+
+  getAllReligionTypes() {
+    return this.http.get<ReligionTypeModel[]>(`http://127.0.0.1:5000/religion_types`,{  });
   }
 }

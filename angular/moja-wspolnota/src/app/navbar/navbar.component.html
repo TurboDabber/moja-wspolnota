@@ -2,7 +2,8 @@
     <mat-toolbar class="toolbar">
         <span>Moja Wspólnota</span>
 
-        <div class="buttons-container">
+        <div class="buttons-container"
+             *ngIf="!(isUserLogged$ | async)">
             <button mat-button
                     class="button"
                     (click)="onRegisterClick()">
@@ -13,6 +14,15 @@
                     class="button"
                     (click)="onLoginClick()">
                 Zaloguj się
+            </button>
+        </div>
+
+        <div class="buttons-container"
+             *ngIf="isUserLogged$ | async">
+            <button mat-button
+                    class="button"
+                    (click)="onLogoutClick()">
+                Wyloguj się
             </button>
         </div>
     </mat-toolbar>    

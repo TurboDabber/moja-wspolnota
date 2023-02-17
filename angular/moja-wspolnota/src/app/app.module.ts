@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 import { RegisterComponent } from './register/register.component';
 import { MapViewComponent } from './map-view/map-view.component';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
@@ -24,6 +25,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AddReligiousCenterModalComponent } from './modals/add-religious-center-modal/add-religious-center-modal.component';
 import { AuthInterceptor } from './auth.interceptor';
 import { ReligiousCenterInfoModalComponent } from './modals/religious-center-info-modal/religious-center-info-modal.component';
+import { InfoDialogModal } from './modals/info-dialog-modal/info-dialog-modal.component';
 
 const MaterialComponents = [
   MatFormFieldModule, 
@@ -32,7 +34,8 @@ const MaterialComponents = [
   MatIconModule,
   MatButtonModule,
   MatToolbarModule,
-  MatDialogModule
+  MatDialogModule,
+  MatSelectModule
 ]
 
 @NgModule({
@@ -46,6 +49,7 @@ const MaterialComponents = [
     InfoSideViewComponent,
     AddReligiousCenterModalComponent,
     ReligiousCenterInfoModalComponent,
+    InfoDialogModal,
   ],
   imports: [
     BrowserModule,

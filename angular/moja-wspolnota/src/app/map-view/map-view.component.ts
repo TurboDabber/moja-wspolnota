@@ -30,7 +30,7 @@ export class MapViewComponent {
   onMapClick(eventType: string, $event: any): void {
     console.log($event.latlng.toString());
     this.currentLatLng = $event.latlng;
-    if(this.currentLatLng != null) {
+    if(this.currentLatLng != null && localStorage.getItem("user_id") != null) {
       this.openDialogAddCenter();
     }
   }
@@ -42,9 +42,9 @@ export class MapViewComponent {
           name: '',
           lat: this.currentLatLng?.lat,
           lng: this.currentLatLng?.lng,
-          user_id: 1,
-          desc: 'string',
-          image: 'image',
+          user_id: localStorage.getItem('user_id'),
+          desc: '',
+          image: '',
           religion_type_id: 1
         }
       });
@@ -52,9 +52,10 @@ export class MapViewComponent {
     dialogRef.afterClosed().subscribe(result => {
       if(this.currentLatLng != null && result != null) {
         const marker = this.markersService.addMarker(this.currentLatLng);
-        this.markers.push(marker);
         
         this.httpClientService.postCenter(result).subscribe(response => {
+          marker.bindPopup(this.markersService.bindData(response));
+          this.markers.push(marker);
           console.log('center created successfully:', response);
         }, error => {
           console.error('Error creating center:', error);

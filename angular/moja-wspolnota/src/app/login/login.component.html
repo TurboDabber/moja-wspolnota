@@ -15,12 +15,11 @@
         <div class="input-wrapper">
             <mat-form-field class="input">
                 <mat-label>
-                    E-mail
+                    Nazwa użytkownika
                 </mat-label>
             
                 <input matInput 
-                       placeholder="E-mail"
-                       [(ngModel)]="email">
+                       [(ngModel)]="userName">
             </mat-form-field>
 
             <mat-form-field class="input">
@@ -53,6 +52,11 @@
                     Zarejestruj się
                 </a>
             </label> 
+            <label>
+                <a routerLink="/main">
+                    Użyj bez logowania
+                </a>
+            </label>
         </div>
     </mat-card>
 </div>

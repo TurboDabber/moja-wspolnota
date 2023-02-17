@@ -41,7 +41,7 @@ export class MarkersService {
     return markers;
   }
   
-  private bindData(center: ReligiousCenterModel): string {
+  bindData(center: ReligiousCenterModel): string {
     return `<div>Nazwa wspólnoty: ${ center.name }</div>` + 
            `<div>Opis: ${ center.desc }</div>` +
            `<div>Typ religii: ${ center.religion_type }</div>` +

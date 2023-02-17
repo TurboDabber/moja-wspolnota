@@ -206,7 +206,7 @@ def create_religious_center():
         "desc" : new_center.desc,
         "image" : new_center.image,
         "religion_type_id" : new_center.religion_type_id,
-        "type_name" : type.name,
+        "religion_type" : type.name,
         "message": 'Successfully created religious center.',
         "center_id": new_center.id
       }

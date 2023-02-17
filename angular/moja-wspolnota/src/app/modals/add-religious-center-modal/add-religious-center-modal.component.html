@@ -26,9 +26,12 @@
             <mat-label>
                 Typ religii
             </mat-label>   
-            <input matInput
-                   required="true"
-                   [(ngModel)]="data.religion_type_id">
+            <mat-select [(ngModel)]="data.religion_type_id"
+                        required>
+                <mat-option *ngFor="let type of religionTypes" [value]="type.id">
+                    {{ type.name }}
+                </mat-option>
+            </mat-select>
         </mat-form-field >
             
         <mat-form-field class="input">
@@ -51,6 +54,7 @@
         <button mat-raised-button
                 color="primary"
                 class="button"
+                [disabled]="data.name.length <= 0"
                 [mat-dialog-close]="data">
             Dodaj
         </button>
