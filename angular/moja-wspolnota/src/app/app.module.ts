@@ -27,6 +27,10 @@ import { AuthInterceptor } from './auth.interceptor';
 import { ReligiousCenterInfoModalComponent } from './modals/religious-center-info-modal/religious-center-info-modal.component';
 import { InfoDialogModal } from './modals/info-dialog-modal/info-dialog-modal.component';
 import { AddReligionTypeModalComponent } from './modals/add-religion-type-modal/add-religion-type-modal.component';
+import { AdditionalContainerComponent } from './additional-container/additional-container.component';
+import { MatListModule } from '@angular/material/list';
+import { MatExpansionModule } from '@angular/material/expansion'
+import { MatAccordion } from '@angular/material/expansion';
 
 const MaterialComponents = [
   MatFormFieldModule, 
@@ -36,7 +40,9 @@ const MaterialComponents = [
   MatButtonModule,
   MatToolbarModule,
   MatDialogModule,
-  MatSelectModule
+  MatSelectModule,
+  MatListModule,
+  MatExpansionModule
 ]
 
 @NgModule({
@@ -47,11 +53,13 @@ const MaterialComponents = [
     MapViewComponent,
     MainViewComponent,
     NavbarComponent,
+    AdditionalContainerComponent,
     InfoSideViewComponent,
     AddReligiousCenterModalComponent,
     ReligiousCenterInfoModalComponent,
     InfoDialogModal,
     AddReligionTypeModalComponent,
+    AdditionalContainerComponent,
   ],
   imports: [
     BrowserModule,
