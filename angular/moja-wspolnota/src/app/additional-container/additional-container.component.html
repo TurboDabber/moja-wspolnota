@@ -1,37 +1,41 @@
-<mat-card class="add-container" *ngIf="chosenReligionCentre">
-    <h2><b>Wybrany ośrodek:</b> </h2> <h3>{{chosenReligionCentre.name}}</h3>
-    <mat-accordion>
-        <mat-expansion-panel class="distance">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Recenzje
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <p >*ngFor="let item of items"> item }}</p>
-        </mat-expansion-panel>
-    </mat-accordion>
-    <div class="distance"></div>
-    <mat-accordion>
-        <mat-expansion-panel >
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Ogłoszenia
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <p> *ngFor="let item of items"> item }}</p>
-        </mat-expansion-panel>
-    </mat-accordion>
-    <div class="button-container">
-        <button mat-raised-button color="primary" class="button"  >
-          Dodaj ogłoszenie
-        </button>
-        <button mat-fab color="warn">
-            <mat-icon>delete</mat-icon>
-        </button>
-    </div>
-    <div class="button-container">
-      <button mat-raised-button color="primary" class="button" >
-        Dodaj Recenzje
-      </button>
-    </div>
-</mat-card>
+<div [hidden]="!chosenReligionCentre">
+  <mat-card class="add-container">
+      <h2><b>Wybrany ośrodek:</b> </h2> <h3>{{chosenReligionCentre?.name ?? ''}}</h3>
+      <mat-accordion>
+          <mat-expansion-panel class="distance">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Recenzje
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p > item </p>
+          </mat-expansion-panel>
+      </mat-accordion>
+      <div class="distance"></div>
+      <mat-accordion>
+          <mat-expansion-panel >
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Ogłoszenia
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>  item </p>
+          </mat-expansion-panel>
+      </mat-accordion>
+      <div [hidden]="!isLoggedUser">
+        <div class="button-container" [hidden]="false">
+            <button mat-raised-button color="primary" class="button"  >
+              Dodaj ogłoszenie
+            </button>
+            <button mat-fab color="warn">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+        <div class="button-container" [hidden]="true"> 
+          <button mat-raised-button color="primary" class="button" >
+            Dodaj Recenzje
+          </button>
+        </div>
+      </div>
+  </mat-card>
+</div>

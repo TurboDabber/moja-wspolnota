@@ -10,33 +10,32 @@ import { MarkersService } from '../services/markers.service';
 export class AdditionalContainerComponent implements OnInit {
   constructor(private markersService: MarkersService, private cdr: ChangeDetectorRef){}
   public chosenReligionCentre: ReligiousCenterModel | null = null;
-  public religionCentreUserId: string | null = null;
-  public userId: string  | null = null;
-  public religionCentreName: string  | null = null;
-  public activeReligionCentreId: string | null = null;
+  public loggedUserId: string  | null = null;
+  public isLoggedUser: boolean = false;
   ngOnInit(): void {
     this.markersService.religiousCenterClicked.subscribe(center => {
       console.log('Received new religious center:', center);
       this.chosenReligionCentre=center;
+      
+      const userId = localStorage.getItem("user_id") ?? '';
+      this.loggedUserId= userId;
+      this.isLoggedUser=false;
+      if(userId)
+      {
+        this.isLoggedUser=true;
+      }
       this.cdr.detectChanges(); // ngif was not detecting changes so this manually trigger change detection
-    });
-    this.religionCentreUserId = localStorage.getItem('religion_centre_user_id');
-    this.userId = localStorage.getItem('user_id');
-    window.addEventListener('storage', (event: StorageEvent) => {
-      console.log("aaaa")
-      if (event.key === 'religion_centre_user_id') {
-        this.religionCentreUserId = event.newValue;
-      } else if (event.key === 'user_id') {
-        this.userId = event.newValue;
-      } else if (event.key === 'religion_centre_name') {
-        this.religionCentreName = event.newValue;
-      } else if (event.key === 'active_religion_centre_id') {
-        this.activeReligionCentreId = event.newValue;
-      }      
     });
   }
 
   onAddReligiousCenter(newReligiousCenter: ReligiousCenterModel | null) {
     console.log('Received new religious center:', newReligiousCenter);
+  }
+
+  public isOwnerOfReligiousCenter(): boolean {
+    console.log(this.loggedUserId !== null && this.chosenReligionCentre !== null &&
+      this.loggedUserId === this.chosenReligionCentre.user_id.toString())
+    return this.loggedUserId !== null && this.chosenReligionCentre !== null &&
+    this.loggedUserId === this.chosenReligionCentre.user_id.toString();
   }
 }

@@ -56,28 +56,30 @@ export class MapViewComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if(this.currentLatLng != null && result != null) {
-        const marker = this.markersService.addMarker(this.currentLatLng);
+        //const marker = this.markersService.addMarker(this.currentLatLng);
         
         this.httpClientService.postCenter(result).subscribe(response => {
-          const pop = Leaflet.popup({closeOnClick: true, autoClose: true, closeButton: true}).setContent(this.markersService.bindData(response))
-          marker.bindPopup(pop);
-          marker.on('click',(event) => {
-            this._religiousCenterClicked.next(response);  
-          })
-          marker.on('popupclose', (event)=> {
-            console.log("finally")
-            this._religiousCenterClicked.next(null); 
-          })
-          if (localStorage.getItem('user_id') === response.user_id.toString()) {
-            marker.setIcon(Leaflet.icon({
-              iconUrl: 'assets/users-icon.png',
-              iconSize: [ 25, 41 ],
-              iconAnchor: [ 13, 41 ],
-              shadowUrl: 'assets/leaflet/marker-shadow.png'
-            }));
-          }
-          this.markers.push(marker);
+          this.markers.push(this.markersService.addCenterMarker(response))
           console.log('center created successfully:', response);
+        //   const pop = Leaflet.popup({closeOnClick: true, autoClose: true, closeButton: true}).setContent(this.markersService.bindData(response))
+        //   marker.bindPopup(pop);
+        //   marker.on('click',(event) => {
+        //     this._religiousCenterClicked.next(response);  
+        //   });
+        //   marker.on('popupclose', (event)=> {
+        //     console.log("finally")
+        //     this._religiousCenterClicked.next(null); 
+        //   })
+        //   if (localStorage.getItem('user_id') === response.user_id.toString()) {
+        //     marker.setIcon(Leaflet.icon({
+        //       iconUrl: 'assets/users-icon.png',
+        //       iconSize: [ 25, 41 ],
+        //       iconAnchor: [ 13, 41 ],
+        //       shadowUrl: 'assets/leaflet/marker-shadow.png'
+        //     }));
+        //   }
+        //   this.markers.push(marker);
+        //   
         }, error => {
           console.error('Error creating center:', error);
         });
