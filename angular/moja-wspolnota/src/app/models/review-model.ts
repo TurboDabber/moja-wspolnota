@@ -3,8 +3,9 @@ import { UserModel } from "./user-model";
 
 export interface ReviewModel {
     id: number;
-    user: UserModel;
     religiousCenter: ReligiousCenterModel;
     mark: number;
-    review: string;
+    review_text: string;
+    user_name: string;
+    user_id: number;
 }

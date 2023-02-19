@@ -2,18 +2,32 @@
   <mat-card class="add-container">
       <h2><b>Wybrany ośrodek:</b> </h2> <h3>{{chosenReligionCentre?.name ?? ''}}</h3>
       <mat-accordion>
-          <mat-expansion-panel class="distance">
+          <mat-expansion-panel class="distance" >
             <mat-expansion-panel-header>
               <mat-panel-title>
                 Recenzje
               </mat-panel-title>
             </mat-expansion-panel-header>
-            <p > item </p>
+            <mat-card class="expansion-element" *ngIf="!reviews || reviews.length===0"><div>Ten ośrodek nie ma jeszcze recenzji</div></mat-card>
+            <span *ngFor="let review of reviews">
+              <mat-card class="expansion-element">
+                <div>
+                  <b>{{ review.user_name }}</b>
+                  <span class="row">
+                    <span class="column" *ngFor="let i of [1, 2, 3, 4, 5]">
+                        <img src="assets/star.png" [class.yellow]="i > review.mark" />
+                    </span>
+                  </span>
+                  {{ review.review_text }}
+                  <br/>
+                </div>
+              </mat-card>
+            </span>
           </mat-expansion-panel>
       </mat-accordion>
       <div class="distance"></div>
       <mat-accordion>
-          <mat-expansion-panel >
+          <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
                 Ogłoszenia
@@ -23,18 +37,22 @@
           </mat-expansion-panel>
       </mat-accordion>
       <div [hidden]="!isLoggedUser">
-        <div class="button-container" [hidden]="false">
-            <button mat-raised-button color="primary" class="button"  >
-              Dodaj ogłoszenie
-            </button>
-            <button mat-fab color="warn">
-                <mat-icon>delete</mat-icon>
-            </button>
+        <div [hidden]="!isLoggedUserOwner">
+          <div class="button-container" >
+              <button mat-raised-button color="primary" class="button"  >
+                Dodaj ogłoszenie
+              </button>
+              <button mat-fab color="warn">
+                  <mat-icon>delete</mat-icon>
+              </button>
+          </div>
         </div>
-        <div class="button-container" [hidden]="true"> 
-          <button mat-raised-button color="primary" class="button" >
-            Dodaj Recenzje
-          </button>
+        <div [hidden]="isLoggedUserOwner">
+          <div class="button-container" > 
+            <button mat-raised-button color="primary" class="button" (click)="onAddReview('click', $event)">
+              Dodaj Recenzje
+            </button>
+          </div>
         </div>
       </div>
   </mat-card>

@@ -1,0 +1,58 @@
+.add-review-modal-container {
+    .mat-select-panel{
+        overflow: hidden !important;
+      }
+      
+      footer{
+        border-top:2px solid gray; 
+        height: 44px;
+        padding-top: 10px;
+        text-align:right;
+      }
+      
+      .custom-panel {
+        max-height: 200px; // mat-select-panel height = 256px. 200 + 10 + 44 + 2
+        overflow: auto;
+      }
+
+    min-width: 500px;
+
+    .input-container {
+        display: flex;
+        flex-direction: column;
+        
+        .input {
+            margin-bottom: 5px;
+        }
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        .button {
+            width: 150px;
+            height: 50px;
+            margin: 20px;
+        }
+    }
+
+    img {
+      max-width: 95%;
+      height: auto;
+    }
+
+    .column {
+      flex: 18.33%;
+    }
+    /* Clear floats after image containers */
+    .row {
+      justify-content: center;
+      display: flex;
+      margin-right: 10px;
+      width: 40%;
+    }
+
+    img.yellow {
+      filter: grayscale(100%);
+    }
+}

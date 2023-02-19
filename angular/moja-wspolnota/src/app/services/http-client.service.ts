@@ -7,6 +7,7 @@ import { AddReligiousCenterModel } from '../models/add-religious-center-model';
 import { ReligiousCenterModel } from '../models/religious-center-model';
 import { ReligionTypeModel } from '../models/religion-type-model';
 import { AddReligionTypeModel } from '../models/add-religion-type-model';
+import { ReviewModel } from '../models/review-model';
 
 @Injectable({
   providedIn: 'root'
@@ -105,6 +106,10 @@ export class HttpClientService{
     return this.http.post<ReligionTypeModel>('http://127.0.0.1:5000/religion_types', religionType, { });
   }
 
+  postReview(review: ReviewModel) {
+    return this.http.post<ReviewModel>('http://127.0.0.1:5000/reviews', review, { });
+  }
+
   getCenter(id: number) {
     return this.http.get(`http://127.0.0.1:5000/religious_centers/${id}`,{  });
   }
@@ -116,4 +121,18 @@ export class HttpClientService{
   getAllReligionTypes() {
     return this.http.get<ReligionTypeModel[]>(`http://127.0.0.1:5000/religion_types`,{  });
   }
+
+  getAllReviews() {
+    return this.http.get<ReviewModel[]>(`http://127.0.0.1:5000/reviews`,{  });
+  }
+
+  getAllReviewsOfCentre(id: number) {
+    return this.http.get<ReviewModel[]>(`http://127.0.0.1:5000/religious_centers/${id}/reviews`,{  });
+  }
+
+  getReview(id: number) {
+    return this.http.get(`http://127.0.0.1:5000/reviews/${id}`,{  });
+  }
+
+
 }

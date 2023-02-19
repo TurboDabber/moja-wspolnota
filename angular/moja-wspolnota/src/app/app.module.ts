@@ -31,6 +31,8 @@ import { AdditionalContainerComponent } from './additional-container/additional-
 import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion'
 import { MatAccordion } from '@angular/material/expansion';
+import { AddReviewModalComponent } from './modals/add-review-modal/add-review-modal.component';
+
 
 const MaterialComponents = [
   MatFormFieldModule, 
@@ -42,7 +44,7 @@ const MaterialComponents = [
   MatDialogModule,
   MatSelectModule,
   MatListModule,
-  MatExpansionModule
+  MatExpansionModule,
 ]
 
 @NgModule({
@@ -60,6 +62,7 @@ const MaterialComponents = [
     InfoDialogModal,
     AddReligionTypeModalComponent,
     AdditionalContainerComponent,
+    AddReviewModalComponent,
   ],
   imports: [
     BrowserModule,

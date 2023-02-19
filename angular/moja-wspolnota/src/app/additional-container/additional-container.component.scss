@@ -9,6 +9,16 @@
     z-index: 1000;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
     padding: 16px;
+    .expansion-element{
+      background-color: #eee;
+      margin-top: 5px;
+      div {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+    }
 
     .distance{
       margin-top: 3px;
@@ -23,5 +33,25 @@
       button {
         margin-top: 7px;
       }
+    }
+
+    img {
+      max-width: 95%;
+      height: auto;
+    }
+
+    .column {
+      flex: 18.33%;
+    }
+    /* Clear floats after image containers */
+    .row {
+      justify-content: center;
+      display: flex;
+      margin-right: 10px;
+      width: 40%;
+    }
+
+    img.yellow {
+      filter: grayscale(100%);
     }
   }

@@ -266,7 +266,7 @@ def delete_religious_center(center_id):
     return jsonify({'message': 'Successfully deleted religious center.'}), 200
   return jsonify({'message': 'Religious center not found.'}), 404
 
-@app.route('/religious_centers/<int:center_id>/religion_type', methods=['GET'])
+@app.route('/religious_centers/<int:center_id>/reviews', methods=['GET'])
 #@login_is_required
 def get_religious_center_reviews(center_id):
   center = ReligiousCenter.query.get(center_id)
@@ -274,12 +274,14 @@ def get_religious_center_reviews(center_id):
     data = []
     reviews = Review.query.filter_by(religious_center_id=center_id).all()
     for rev in reviews:
+      user = User.query.get(rev.user_id)
       jsonReview= {
         "id" : rev.id,
         "religious_center_id" : rev.religious_center_id,
         "mark" : rev.mark,
         "review_text" : rev.review_text,
-        "user_id" : rev.user_id
+        "user_id" : rev.user_id,
+        "user_name" : user.name
       }
       data.append(jsonReview)
     return jsonify(data), 200
@@ -321,7 +323,16 @@ def create_review():
     new_review = Review(religious_center_id=data['religious_center_id'], mark=data['mark'], review_text=data['review_text'], user_id=data['user_id'])
     db.session.add(new_review)
     db.session.commit()
-    return jsonify({'message': 'Successfully created review.', 'review_id': new_review.id}), 201
+    user = User.query.get(new_review.user_id)
+    jsonReview = {
+        "id" : new_review.id,
+        "religious_center_id" : new_review.religious_center_id,
+        "mark" : new_review.mark,
+        "review_text" : new_review.review_text,
+        "user_id" : new_review.user_id,
+        "user_name" : user.name
+      }
+    return jsonify(jsonReview), 201
   else:
     return jsonify({'message': 'Incorrect! this religious_centre does not exist in our environemtn.', 'religious_centre_id': data['religious_center_id']}), 404
 
@@ -377,12 +388,14 @@ def get_all_reviews():
   if reviews:
     data = []
     for review in reviews:
+      user = User.query.get(review.user_id)
       json_reviews={
           "id" : review.id,
           "religious_center_id" : review.religious_center_id,
           "mark" : review.mark,
           "review_text" : review.review_text,
-          "user_id" : review.user_id
+          "user_id" : review.user_id,
+          "user_name" : user.name
         }
       data.append(json_reviews)
     return jsonify(data), 200
