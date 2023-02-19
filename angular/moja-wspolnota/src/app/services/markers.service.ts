@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Leaflet from 'leaflet';
+import { Observable, Subject } from 'rxjs';
 import { ReligiousCenterInfoModalComponent } from '../modals/religious-center-info-modal/religious-center-info-modal.component';
+import { AddReligiousCenterModel } from '../models/add-religious-center-model';
 import { ReligiousCenterModel } from '../models/religious-center-model';
 import { ReligiousCenterInfoService } from './religious-center-info.service';
 
@@ -9,7 +11,11 @@ import { ReligiousCenterInfoService } from './religious-center-info.service';
   providedIn: 'root'
 })
 export class MarkersService {
+  private _religiousCenterClicked = new Subject<ReligiousCenterModel | null>();
 
+  get religiousCenterClicked(): Observable<ReligiousCenterModel | null> {
+    return this._religiousCenterClicked.asObservable();
+  }
   constructor(
     private dialog: MatDialog
   ) { }
@@ -35,7 +41,15 @@ export class MarkersService {
     centersList.forEach(center => {
       const latLng: Leaflet.LatLng = Leaflet.latLng(center.lat, center.lng);
       const marker: Leaflet.Marker = this.addMarker(latLng);
-      marker.bindPopup(this.bindData(center));
+      const popup = Leaflet.popup({closeOnClick: true, autoClose: true, closeButton: true}).setContent(this.bindData(center))
+      marker.bindPopup(popup)
+      marker.on('click',(event) => {
+        this._religiousCenterClicked.next(center);  
+      });
+      marker.on('popupclose', (event)=> { //... cały wieczór popsuty bo popup.on('close' ()=>{}) nie działał... ani popup.on('popupclose',[...])
+        console.log("finally")
+        this._religiousCenterClicked.next(null); 
+      })
       if (localStorage.getItem('user_id') === center.user_id.toString()) {
         marker.setIcon(Leaflet.icon({
           iconUrl: 'assets/users-icon.png',
@@ -55,10 +69,10 @@ export class MarkersService {
     `<br/><div><b>Typ religii:</b> <br/><i>${ center.religion_type }</i></div>` +
     `<br/><div><b>Założyciel:</b> <br/><i>${ center.user_name }</i></div>` +
     `<br/><div><b>Szerokość geograficzna:</b><i>${ center.lat }</i></div>` +
-    `<br/><div><b>Długość geograficzna:</b><i>${ center.lng }</i></div>` +
-    `<br/><div><b>Zdjęcie:</b></div>`;
-     if (center.image) {
-            html += `<img src="${ center.image }" alt="Zdjęcie ośrodka religijnego"/>`;
+    `<br/><div><b>Długość geograficzna:</b><i>${ center.lng }</i></div>`
+    if (center.image) {
+            html +=  `<br/><div><b>Zdjęcie:</b></div>`
+            +`<img src="${ center.image }" alt="Zdjęcie ośrodka religijnego"/>`;
      }
      return html;
   }
@@ -76,5 +90,6 @@ export class MarkersService {
           image: center.image
         }
       });
+      
   }
 }

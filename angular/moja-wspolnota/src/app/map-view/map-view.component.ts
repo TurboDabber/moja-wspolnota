@@ -1,8 +1,10 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Leaflet from 'leaflet';
+import { Observable, Subject } from 'rxjs';
 import { AddReligiousCenterModalComponent } from '../modals/add-religious-center-modal/add-religious-center-modal.component';
 import { AddReligiousCenterModel } from '../models/add-religious-center-model';
+import { ReligiousCenterModel } from '../models/religious-center-model';
 import { HttpClientService } from '../services/http-client.service';
 import { MarkersService } from '../services/markers.service';
 
@@ -17,10 +19,13 @@ export class MapViewComponent {
     private dialog: MatDialog,
     private httpClientService: HttpClientService
   ) {}
+  private _religiousCenterClicked = new Subject<ReligiousCenterModel | null>();
 
+  get religiousCenterClicked(): Observable<ReligiousCenterModel | null> {
+    return this._religiousCenterClicked.asObservable();
+  }
   private currentLatLng: Leaflet.LatLng | undefined;
   public markers: Leaflet.Layer[] = [];
-
   options: Leaflet.MapOptions = {
     layers: getLayers(),
     zoom: 12,
@@ -54,7 +59,15 @@ export class MapViewComponent {
         const marker = this.markersService.addMarker(this.currentLatLng);
         
         this.httpClientService.postCenter(result).subscribe(response => {
-          marker.bindPopup(this.markersService.bindData(response));
+          const pop = Leaflet.popup({closeOnClick: true, autoClose: true, closeButton: true}).setContent(this.markersService.bindData(response))
+          marker.bindPopup(pop);
+          marker.on('click',(event) => {
+            this._religiousCenterClicked.next(response);  
+          })
+          marker.on('popupclose', (event)=> {
+            console.log("finally")
+            this._religiousCenterClicked.next(null); 
+          })
           if (localStorage.getItem('user_id') === response.user_id.toString()) {
             marker.setIcon(Leaflet.icon({
               iconUrl: 'assets/users-icon.png',
