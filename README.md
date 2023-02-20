@@ -41,5 +41,7 @@ Dodano wygodne wsparcie zdjęć oraz ich wyświetlanie, niestety muszą się ska
 ![image](https://user-images.githubusercontent.com/43883128/219728214-28b1ffe7-4fc3-4e79-97cf-973b93cc4421.png)
   Status na 19.02.2022, dodano recenzje
 ![image](https://user-images.githubusercontent.com/43883128/219953458-d88916f9-bdf1-4b0f-9cd7-7d85281aa797.png)
+ Status na 20.02, usuwanie ośrodka i ogłoszenia
+![image](https://user-images.githubusercontent.com/43883128/220207018-da624550-c6fb-4d27-ab7a-11c448ffef30.png)
 
 
