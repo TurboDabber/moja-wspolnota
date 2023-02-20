@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddAnnouncmentModalComponent } from '../modals/add-announcment-modal/add-announcment-modal.component';
 import { AddReligionTypeModalComponent } from '../modals/add-religion-type-modal/add-religion-type-modal.component';
@@ -25,6 +25,7 @@ export class AdditionalContainerComponent implements OnInit {
   public isLoggedUserOwner: boolean = false;
   public reviews: ReviewModel[]=[];
   public announcments: AnnouncementModel[]=[];
+
   ngOnInit(): void {
     this.markersService.religiousCenterClicked.subscribe(center => {
       this.chosenReligionCentre=center;
@@ -111,5 +112,15 @@ export class AdditionalContainerComponent implements OnInit {
           });
       };
     });   
+  }
+
+  deleteCentre(eventType: string, $event: any)
+  {
+    if(this.chosenReligionCentre?.id != undefined)
+      this.httpClientService.deleteReligion(this.chosenReligionCentre?.id).subscribe(response => {
+        window.location.reload();
+        }, error => {
+          console.error('Error creating type:', error);
+        });
   }
 }

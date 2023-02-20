@@ -30,6 +30,7 @@ export class NavbarComponent {
 
   onLogoutClick(): void {
     this.httpClientService.logout();
+    window.location.reload();
   }
 
 }

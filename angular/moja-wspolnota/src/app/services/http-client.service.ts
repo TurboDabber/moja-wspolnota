@@ -108,6 +108,9 @@ export class HttpClientService{
     return this.http.post<ReligionTypeModel>('http://127.0.0.1:5000/religion_types', religionType, { });
   }
 
+  deleteReligion(id: number) {
+    return this.http.delete(`http://127.0.0.1:5000/religious_centers/${id}`,{  });
+  }
 
   postAnnouncment(announcement: AddAnnouncmentModel) {
     return this.http.post<AnnouncementModel>(`http://127.0.0.1:5000/announcments`, announcement, {  });

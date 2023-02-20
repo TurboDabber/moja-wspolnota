@@ -1,7 +1,8 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import * as Leaflet from 'leaflet';
 import { Observable, Subject } from 'rxjs';
+import { AdditionalContainerComponent } from '../additional-container/additional-container.component';
 import { AddReligiousCenterModalComponent } from '../modals/add-religious-center-modal/add-religious-center-modal.component';
 import { AddReligiousCenterModel } from '../models/add-religious-center-model';
 import { ReligiousCenterModel } from '../models/religious-center-model';
@@ -13,12 +14,16 @@ import { MarkersService } from '../services/markers.service';
   templateUrl: './map-view.component.html',
   styleUrls: ['./map-view.component.scss']
 })
-export class MapViewComponent {
+export class MapViewComponent implements OnInit {
   constructor(
     private markersService: MarkersService,
     private dialog: MatDialog,
     private httpClientService: HttpClientService
   ) {}
+  
+  ngOnInit(): void {
+   //this.markersService
+  }
   private _religiousCenterClicked = new Subject<ReligiousCenterModel | null>();
 
   get religiousCenterClicked(): Observable<ReligiousCenterModel | null> {

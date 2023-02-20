@@ -261,6 +261,12 @@ def delete_religious_center(center_id):
     return jsonify({'message': 'Unauthorized'}), 401
   center = ReligiousCenter.query.get(center_id)
   if center:
+    announcments = ReligiousAnnouncments.query.filter_by(religious_center_id=center_id).all()
+    reviews = Review.query.filter_by(religious_center_id=center_id).all()
+    for rev in reviews:
+      db.session.delete(rev)
+    for ann in announcments:
+      db.session.delete(ann)
     db.session.delete(center)
     db.session.commit()
     return jsonify({'message': 'Successfully deleted religious center.'}), 200
