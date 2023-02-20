@@ -33,13 +33,23 @@
                 Ogłoszenia
               </mat-panel-title>
             </mat-expansion-panel-header>
-            <p>  item </p>
+            <mat-card class="expansion-element" *ngIf="!announcments || announcments.length===0"><div>Ten ośrodek nie ma jeszcze ogłoszeń</div></mat-card>
+            <span *ngFor="let announnce of announcments">
+              <mat-card class="expansion-element">
+                <div>
+                  <b>{{ announnce.user_name }}</b><br/>
+                    <b>Dnia:&nbsp;&nbsp;&nbsp;</b>{{ announnce.date }}<br/>
+                  {{ announnce.announcment }}
+                  <br/>
+                </div>
+              </mat-card>
+            </span>
           </mat-expansion-panel>
       </mat-accordion>
       <div [hidden]="!isLoggedUser">
         <div [hidden]="!isLoggedUserOwner">
           <div class="button-container" >
-              <button mat-raised-button color="primary" class="button"  >
+              <button mat-raised-button color="primary" class="button"  (click)="dispCreateAnnouncmentModal('click', $event)">
                 Dodaj ogłoszenie
               </button>
               <button mat-fab color="warn">

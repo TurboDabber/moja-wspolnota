@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AddAnnouncmentModalComponent } from '../modals/add-announcment-modal/add-announcment-modal.component';
 import { AddReligionTypeModalComponent } from '../modals/add-religion-type-modal/add-religion-type-modal.component';
 import { AddReviewModalComponent } from '../modals/add-review-modal/add-review-modal.component';
+import { AnnouncementModel } from '../models/announcement-model';
 import { ReligiousCenterModel } from '../models/religious-center-model';
 import { ReviewModel } from '../models/review-model';
 import { HttpClientService } from '../services/http-client.service';
@@ -22,15 +24,20 @@ export class AdditionalContainerComponent implements OnInit {
   public isLoggedUser: boolean = false;
   public isLoggedUserOwner: boolean = false;
   public reviews: ReviewModel[]=[];
+  public announcments: AnnouncementModel[]=[];
   ngOnInit(): void {
     this.markersService.religiousCenterClicked.subscribe(center => {
-      console.log('Received new religious center:', center);
       this.chosenReligionCentre=center;
       if(center?.id != undefined)
       {
         this.httpClientService.getAllReviewsOfCentre(center?.id).subscribe(response => {
-          console.log('Religion types pulled successfully:', response);
           this.reviews = response;
+          this.cdr.detectChanges();
+        }, error => {
+          console.error('Error getting religion types:', error);
+        });
+        this.httpClientService.getAllAnnouncmentsOfCentre(center?.id).subscribe(response => {
+          this.announcments = response;
           this.cdr.detectChanges();
         }, error => {
           console.error('Error getting religion types:', error);
@@ -61,7 +68,6 @@ export class AdditionalContainerComponent implements OnInit {
 
   dispCreateReviewModal(eventType: string, $event: any)
   {
-    console.log("click! type modal")
     const dialogRef = this.dialog.open(AddReviewModalComponent,
       {
         data: {
@@ -84,4 +90,26 @@ export class AdditionalContainerComponent implements OnInit {
     });   
   }
 
+  dispCreateAnnouncmentModal(eventType: string, $event: any)
+  {
+    const dialogRef = this.dialog.open(AddAnnouncmentModalComponent,
+      {
+        data: {
+          announcment: '',
+          religious_center_id: this.chosenReligionCentre?.id,
+          user_id: Number(localStorage.getItem("user_id"))
+        }
+      });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log("announcment post:"+result)
+      if(result != null)
+      {
+        this.httpClientService.postAnnouncment(result).subscribe(response => {
+          this.announcments.push(response) }, error => {
+            console.error('Error creating type:', error);
+          });
+      };
+    });   
+  }
 }

@@ -32,6 +32,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatExpansionModule } from '@angular/material/expansion'
 import { MatAccordion } from '@angular/material/expansion';
 import { AddReviewModalComponent } from './modals/add-review-modal/add-review-modal.component';
+import { AddAnnouncmentModalComponent } from './modals/add-announcment-modal/add-announcment-modal.component';
 
 
 const MaterialComponents = [
@@ -63,6 +64,7 @@ const MaterialComponents = [
     AddReligionTypeModalComponent,
     AdditionalContainerComponent,
     AddReviewModalComponent,
+    AddAnnouncmentModalComponent,
   ],
   imports: [
     BrowserModule,

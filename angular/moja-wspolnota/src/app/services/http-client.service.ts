@@ -8,6 +8,8 @@ import { ReligiousCenterModel } from '../models/religious-center-model';
 import { ReligionTypeModel } from '../models/religion-type-model';
 import { AddReligionTypeModel } from '../models/add-religion-type-model';
 import { ReviewModel } from '../models/review-model';
+import { AnnouncementModel } from '../models/announcement-model';
+import { AddAnnouncmentModel } from '../models/add-announcment-model';
 
 @Injectable({
   providedIn: 'root'
@@ -106,6 +108,11 @@ export class HttpClientService{
     return this.http.post<ReligionTypeModel>('http://127.0.0.1:5000/religion_types', religionType, { });
   }
 
+
+  postAnnouncment(announcement: AddAnnouncmentModel) {
+    return this.http.post<AnnouncementModel>(`http://127.0.0.1:5000/announcments`, announcement, {  });
+  }
+
   postReview(review: ReviewModel) {
     return this.http.post<ReviewModel>('http://127.0.0.1:5000/reviews', review, { });
   }
@@ -134,5 +141,7 @@ export class HttpClientService{
     return this.http.get(`http://127.0.0.1:5000/reviews/${id}`,{  });
   }
 
-
+  getAllAnnouncmentsOfCentre(id: number) {
+    return this.http.get<AnnouncementModel[]>(`http://127.0.0.1:5000/religious_centers/${id}/announcments`,{  });
+  }
 }

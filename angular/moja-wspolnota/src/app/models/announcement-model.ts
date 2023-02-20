@@ -2,6 +2,9 @@ import { ReligiousCenterModel } from "./religious-center-model";
 
 export interface AnnouncementModel {
     id: number;
-    religiousCenter: ReligiousCenterModel;
-    announcement: string;
+    religious_center_id: number,
+    user_id: number,
+    announcment: string,
+    date : string,
+    user_name : string
 }

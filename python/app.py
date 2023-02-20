@@ -287,6 +287,28 @@ def get_religious_center_reviews(center_id):
     return jsonify(data), 200
   return jsonify({'message': 'Religious center not found.'}), 404
 
+@app.route('/religious_centers/<int:center_id>/announcments', methods=['GET'])
+#@login_is_required
+def get_religious_center_announcments_(center_id):
+  center = ReligiousCenter.query.get(center_id)
+  if center:
+    data = []
+    religious_announcment = ReligiousAnnouncments.query.filter_by(religious_center_id=center_id).all()
+    for rel_an in religious_announcment:
+      user = User.query.get(rel_an.user_id)
+      jsonAnnouncment= {
+            'id': rel_an.id,
+            'religious_center_id': rel_an.religious_center_id,
+            'user_id': rel_an.user_id,
+            'announcment': rel_an.announcment,
+            'date' : rel_an.date,
+            'user_name' : user.name
+      }
+      data.append(jsonAnnouncment)
+    return jsonify(data), 200
+  return jsonify({'message': 'Religious center not found.'}), 404
+
+
 @app.route('/religious_centers', methods=['GET'])
 def get_all_religion_centers():
   
@@ -495,8 +517,15 @@ def create_religious_announcment():
     new_announcment = ReligiousAnnouncments(religious_center_id=religious_center_id, user_id=user_id, announcment=announcment,date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     db.session.add(new_announcment)
     db.session.commit()
-    
-    return jsonify({'message': 'Successfully created religious announcment.', 'id': new_announcment.id}), 201
+    json_announcment = {
+      'id': new_announcment.id,
+      'religious_center_id': new_announcment.religious_center_id,
+      'user_id': new_announcment.user_id,
+      'user_name': user.name,
+      'announcment': new_announcment.announcment,
+      'date' : new_announcment.date
+      }
+    return jsonify(json_announcment), 201
 
 @app.route('/announcments', methods=['GET'])
 #@login_is_required
