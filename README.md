@@ -14,6 +14,7 @@ Aplikacja zgodna z standardem REST.API, logowanie przebiega przez uzyskanie prze
 ![image](https://user-images.githubusercontent.com/43883128/220207018-da624550-c6fb-4d27-ab7a-11c448ffef30.png)
 
 ![image](https://user-images.githubusercontent.com/43883128/219617395-c822e46c-4d5d-4bcb-b019-193713f52471.png)
+![image](https://user-images.githubusercontent.com/43883128/220407378-b842c65d-70bf-4075-b834-3bf25ffd5b0f.png)
 
 #PYTHON
 uruchom terminal w moja-wspolnota/python
