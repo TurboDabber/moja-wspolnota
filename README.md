@@ -1,11 +1,17 @@
 # moja-wspolnota
 by: Paweł L., Wiktoria G. & Paweł K.
+
+
 Technologie: Angular, Leaflet, Python - Flask
-Aplikacja umożliwia przeglądanie wspólnot na mapie (Leaflet) przez użytkowników nie-zalogowanych, oraz dodawanie nowych centrów dla użytkowników zalogowanych. 
+
+
+
+Aplikacja umożliwia przeglądanie wspólnot na mapie (Leaflet) przez użytkowników nie-zalogowanych, oraz dodawanie nowych centrów dla użytkowników zalogowanych.
+Jeżeli zalogowany użytkownik dodał jakieś centrum wspólnoty to będzie ono widoczne przez niego jako czerwone. Własne centra można usuwać lub dodawać do nich ogłoszenia z datą i treścią. Dodano też możliwość wystawiania recenzji wspólnotom innych użytkowników, składającą się z treści oraz oceny w skali od 1 - 5.
+
 Użytkownik może zarejestrować się przez stronę oraz później zalogować.
 Aplikacja zgodna z standardem REST.API, logowanie przebiega przez uzyskanie przez frontend tokena autoryzacyjnego z backendu i przesyłanie go w nagłówku.
-![image](https://user-images.githubusercontent.com/43883128/219617222-3a0e7c75-b54f-4e57-8d4f-0916dd279dd6.png)
-![image](https://user-images.githubusercontent.com/43883128/219617305-61927a61-5b2c-4317-bcc5-f95b715367d7.png)
+![image](https://user-images.githubusercontent.com/43883128/220207018-da624550-c6fb-4d27-ab7a-11c448ffef30.png)
 
 ![image](https://user-images.githubusercontent.com/43883128/219617395-c822e46c-4d5d-4bcb-b019-193713f52471.png)
 
@@ -29,19 +35,5 @@ uruchom terminal w moja-wspolnota/angular/moja-wspolnota
 2. zainstaluj wszystko: npm install
 
 3. Uruchom npm start
-
-
-
-
-PS. Status na 18.02.2022 Nie brany już pod uwagę
-Dodano oznaczenie sugerujący że na mapie znajdują się piny dodane przez aktywnego użytkownika, 
-Dodano wygodne wsparcie zdjęć oraz ich wyświetlanie, niestety muszą się skalować
-![image](https://user-images.githubusercontent.com/43883128/219725040-0a3ca6fc-461d-4ef3-a94e-7cb3ddd8d9bf.png)
-![image](https://user-images.githubusercontent.com/43883128/219727476-99194f4d-171d-443c-b73c-633519cdb7e7.png)
-![image](https://user-images.githubusercontent.com/43883128/219728214-28b1ffe7-4fc3-4e79-97cf-973b93cc4421.png)
-  Status na 19.02.2022, dodano recenzje
-![image](https://user-images.githubusercontent.com/43883128/219953458-d88916f9-bdf1-4b0f-9cd7-7d85281aa797.png)
- Status na 20.02, usuwanie ośrodka i ogłoszenia
-![image](https://user-images.githubusercontent.com/43883128/220207018-da624550-c6fb-4d27-ab7a-11c448ffef30.png)
 
 
